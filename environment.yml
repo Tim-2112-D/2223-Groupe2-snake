@@ -6,5 +6,4 @@ dependencies:
   - black=22.6.0
   - flake8=4.0.1
   - numpy==1.23.1
-  - python3-pygame==2.1.2
   - python=3.10
