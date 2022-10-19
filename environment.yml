@@ -7,3 +7,5 @@ dependencies:
   - flake8=4.0.1
   - numpy==1.23.1
   - python=3.10
+  - pip:
+    - pygame==2.1.2
