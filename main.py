@@ -1,4 +1,4 @@
 import pygame
 import numpy
 
-print("snake")
+print("snake!!!")
