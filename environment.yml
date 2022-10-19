@@ -1,4 +1,4 @@
-name: tdlog-new
+name: tdlog-snake
 channels:
   - default
   - conda-forge
