@@ -1,0 +1,9 @@
+name: tdlog-tp3
+channels:
+  - default
+  - conda-forge
+dependencies:
+  - black=22.6.0
+  - flake8=4.0.1
+  - numpy=1.23.1
+  - python=3.10
