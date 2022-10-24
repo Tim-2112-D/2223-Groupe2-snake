@@ -37,14 +37,14 @@ class Snake:
     def move(self):
         self.pos[0] += self.vel[0]
         self.pos[1] += self.vel[1]
-        if self.pos[0] >= dis_width-20 and self.vel[0] > 0:
+        if self.pos[0] >= dis_width - 20 and self.vel[0] > 0:
             self.pos[0] = -20
-        elif self.pos[1] >= dis_height-20 and self.vel[1] > 0:
+        elif self.pos[1] >= dis_height - 20 and self.vel[1] > 0:
             self.pos[1] = -20
         elif self.pos[0] <= -20 and self.vel[0] < 0:
-            self.pos[0] = dis_width-20
+            self.pos[0] = dis_width - 20
         elif self.pos[1] <= -20 and self.vel[1] < 0:
-            self.pos[1] = dis_height-20
+            self.pos[1] = dis_height - 20
         clock.tick(2)
 
 
