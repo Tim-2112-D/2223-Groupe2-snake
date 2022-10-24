@@ -2,7 +2,7 @@ import pygame
 
 pygame.init()
 
-dis_width = 800
+dis_width = 600
 dis_height = 600
 green = "#32CD32"
 
@@ -15,24 +15,24 @@ clock = pygame.time.Clock()
 class Snake:
     def __init__(self, xpos, ypos):
         self.pos = [xpos, ypos]
-        self.vel = [10, 0]
+        self.vel = [20, 0]
 
     def draw(self):
-        pygame.draw.rect(dis, green, [self.pos[0], self.pos[1], 10, 10])
+        pygame.draw.rect(dis, green, [self.pos[0], self.pos[1], 20, 20])
 
     def keys(self, event):
         if event.key == pygame.K_LEFT:
-            self.vel[0] = -10
+            self.vel[0] = -20
             self.vel[1] = 0
         elif event.key == pygame.K_RIGHT:
-            self.vel[0] = 10
+            self.vel[0] = 20
             self.vel[1] = 0
         elif event.key == pygame.K_UP:
             self.vel[0] = 0
-            self.vel[1] = -10
+            self.vel[1] = -20
         elif event.key == pygame.K_DOWN:
             self.vel[0] = 0
-            self.vel[1] = 10
+            self.vel[1] = 20
 
     def move(self):
         self.pos[0] += self.vel[0]
@@ -55,7 +55,7 @@ def game_loop():
 
 
 game_over = False
-player = Snake(100, 100)
+player = Snake(300, 300)
 while not game_over:
     game_over = game_loop()
 
