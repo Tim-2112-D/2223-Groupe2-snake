@@ -4,7 +4,7 @@ pygame.init()
 
 dis_width = 800
 dis_height = 600
-green = '#32CD32'
+green = "#32CD32"
 
 dis = pygame.display.set_mode((dis_width, dis_height))
 pygame.display.set_caption("Snake")
@@ -48,7 +48,7 @@ def game_loop():
             player.keys(event)
     player.move()
 
-    dis.fill('#FFFFFF')
+    dis.fill("#FFFFFF")
     player.draw()
     pygame.display.update()
     return False
