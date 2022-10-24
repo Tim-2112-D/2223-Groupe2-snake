@@ -11,6 +11,12 @@ pygame.display.set_caption("Snake")
 
 clock = pygame.time.Clock()
 
+def drawGrid():
+    blockSize = 20 #Set the size of the grid block
+    for x in range(0, dis_width, blockSize):
+        for y in range(0, dis_height, blockSize):
+            rect = pygame.Rect(x, y, blockSize, blockSize)
+            pygame.draw.rect(dis, WHITE, rect, 1)
 
 class Snake:
     def __init__(self, xpos, ypos):
@@ -49,6 +55,7 @@ class Snake:
 
 
 def game_loop():
+    drawGrid()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return True
@@ -69,3 +76,4 @@ while not game_over:
 
 pygame.quit()
 quit()
+
