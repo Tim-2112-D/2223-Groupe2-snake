@@ -21,23 +21,31 @@ class Snake:
         pygame.draw.rect(dis, green, [self.pos[0], self.pos[1], 20, 20])
 
     def keys(self, event):
-        if event.key == pygame.K_LEFT:
+        if event.key == pygame.K_LEFT and self.vel[0] != 20:
             self.vel[0] = -20
             self.vel[1] = 0
-        elif event.key == pygame.K_RIGHT:
+        elif event.key == pygame.K_RIGHT and self.vel[0] != -20:
             self.vel[0] = 20
             self.vel[1] = 0
-        elif event.key == pygame.K_UP:
+        elif event.key == pygame.K_UP and self.vel[1] != 20:
             self.vel[0] = 0
             self.vel[1] = -20
-        elif event.key == pygame.K_DOWN:
+        elif event.key == pygame.K_DOWN and self.vel[0] != 20:
             self.vel[0] = 0
             self.vel[1] = 20
 
     def move(self):
         self.pos[0] += self.vel[0]
         self.pos[1] += self.vel[1]
-        clock.tick(10)
+        if self.pos[0] >= dis_width-20 and self.vel[0] > 0:
+            self.pos[0] = -20
+        elif self.pos[1] >= dis_height-20 and self.vel[1] > 0:
+            self.pos[1] = -20
+        elif self.pos[0] <= 0 and self.vel[0] < 0:
+            self.pos[0] = dis_width
+        elif self.pos[1] <= 0 and self.vel[1] < 0:
+            self.pos[1] = dis_height
+        clock.tick(2)
 
 
 def game_loop():
@@ -55,7 +63,7 @@ def game_loop():
 
 
 game_over = False
-player = Snake(300, 300)
+player = Snake(40, 40)
 while not game_over:
     game_over = game_loop()
 
