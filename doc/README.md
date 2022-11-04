@@ -39,7 +39,7 @@ Tim DAFFNER - Charles DEZONS
 - Endscreen
 
 ### 3.2 Schedule
-1. [x] Snake moving on the screen 
+1. Snake moving on the screen [x]
 2. [x] User steering snake
 3. [ ] Border rules
 4. [ ] Apples
