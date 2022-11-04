@@ -9,4 +9,48 @@ Tim DAFFNER - Charles DEZONS
 - Taking further inspiration from the game "Tron"
 
 ## 2. Features
-- 
+- Snakes
+  - are able to grow
+  - moving over the screen on a grid
+  - User steers them with buttons
+  - Buttons for first and second user
+- Apples (or other items) for the snakes to eat and grow
+- Scoreboard
+  - time or eaten items/length
+- Start-screen:
+  - Two or one player?
+  - User names?
+  - Highscore (single player)
+- End-screen:
+  - Highscore
+  - Current score (single player)
+  - Winner
+- AI
+  - choice of difficulty?
+  - random?
+
+## 3. Structure
+### 3.1 Components
+- screen
+- snake(s)
+- apples
+- scoreboard
+- Startscreen
+- Endscreen
+
+### 3.2 Schedule
+1. Snake moving on the screen
+  1.1. User steering snake
+  1.2. Border rules
+  1.3. Apples
+2. Scoreboard
+3. Start-screen
+4. End-screen
+5. Second snake
+  5.1. Second user steering the snake
+  5.2. Adapting scoreboard for two users
+  5.3. Adapting start + end-screen if not done before
+6. AI
+  6.1 Implementing random AI
+  6.2 Adapting startscreen for AI choice
+  6.3 ??? smart AI with different levels
