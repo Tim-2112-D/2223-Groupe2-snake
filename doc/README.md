@@ -40,8 +40,8 @@ Tim DAFFNER - Charles DEZONS
 
 ### 3.2 Schedule
 1. Snake moving on the screen
-  - User steering snake
-  - Border rules
+  1) User steering snake
+  2) Border rules
   - Apples
 2. Scoreboard
 3. Start-screen
