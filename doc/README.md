@@ -40,17 +40,17 @@ Tim DAFFNER - Charles DEZONS
 
 ### 3.2 Schedule
 1. Snake moving on the screen
-  1. User steering snake
-  2. Border rules
-  3. Apples
+  - User steering snake
+  - Border rules
+  - Apples
 2. Scoreboard
 3. Start-screen
 4. End-screen
 5. Second snake
-  1. Second user steering the snake
-  2. Adapting scoreboard for two users
-  3. Adapting start + end-screen if not done before
+  - Second user steering the snake
+  - Adapting scoreboard for two users
+  - Adapting start + end-screen if not done before
 6. AI
-  1. Implementing random AI
-  2. Adapting startscreen for AI choice
-  3. ??? smart AI with different levels
+  - Implementing random AI
+  - Adapting startscreen for AI choice
+  - ??? smart AI with different levels
