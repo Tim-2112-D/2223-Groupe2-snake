@@ -5,53 +5,78 @@ pygame.init()
 dis_width = 600
 dis_height = 600
 green = "#32CD32"
+size = 20
 
 dis = pygame.display.set_mode((dis_width, dis_height))
 pygame.display.set_caption("Snake")
 
 clock = pygame.time.Clock()
 
+
 def drawGrid():
-    blockSize = 20 #Set the size of the grid block
+    blockSize = 20  # Set the size of the grid block
     for x in range(0, dis_width, blockSize):
         for y in range(0, dis_height, blockSize):
             rect = pygame.Rect(x, y, blockSize, blockSize)
-            pygame.draw.rect(dis, WHITE, rect, 1)
+            # pygame.draw.rect(dis, WHITE, rect, 1)
+
+
+class Position:
+    def __init__(self, x, y, width):
+        self.x = x
+        self.y = y
+        self.width = width
+
+    def draw(self):
+        pygame.draw.rect(dis, green, [self.x, self.y, self.width, self.width])
+
 
 class Snake:
     def __init__(self, xpos, ypos):
-        self.pos = [xpos, ypos]
-        self.vel = [20, 0]
+        self.blocks = [Position(xpos, ypos, size), Position(xpos - size, ypos, size), Position(xpos - 2 * size, ypos, size)]
+        self.vel = [size, 0]
+        self.length = 3
 
     def draw(self):
-        pygame.draw.rect(dis, green, [self.pos[0], self.pos[1], 20, 20])
+        for block in self.blocks:
+            block.draw()
 
     def keys(self, event):
-        if event.key == pygame.K_LEFT and self.vel[0] != 20:
+        if event.key == pygame.K_LEFT and self.vel[0] == 0:
             self.vel[0] = -20
             self.vel[1] = 0
-        elif event.key == pygame.K_RIGHT and self.vel[0] != -20:
+        elif event.key == pygame.K_RIGHT and self.vel[0] == 0:
             self.vel[0] = 20
             self.vel[1] = 0
-        elif event.key == pygame.K_UP and self.vel[1] != 20:
+        elif event.key == pygame.K_UP and self.vel[1] == 0:
             self.vel[0] = 0
             self.vel[1] = -20
-        elif event.key == pygame.K_DOWN and self.vel[0] != 20:
+        elif event.key == pygame.K_DOWN and self.vel[1] == 0:
             self.vel[0] = 0
             self.vel[1] = 20
+        elif event.key == pygame.K_SPACE:
+            self.grow()
 
     def move(self):
-        self.pos[0] += self.vel[0]
-        self.pos[1] += self.vel[1]
-        if self.pos[0] >= dis_width - 20 and self.vel[0] > 0:
-            self.pos[0] = -20
-        elif self.pos[1] >= dis_height - 20 and self.vel[1] > 0:
-            self.pos[1] = -20
-        elif self.pos[0] <= -20 and self.vel[0] < 0:
-            self.pos[0] = dis_width - 20
-        elif self.pos[1] <= -20 and self.vel[1] < 0:
-            self.pos[1] = dis_height - 20
-        clock.tick(2)
+
+        self.blocks = [Position(self.blocks[0].x, self.blocks[0].y, size)] + self.blocks[0:-1]
+
+        self.blocks[0].x += self.vel[0]
+        self.blocks[0].y += self.vel[1]
+        if self.blocks[0].x >= dis_width - 20 and self.vel[0] > 0:
+            self.blocks[0].x = -20
+        elif self.blocks[0].y >= dis_height - 20 and self.vel[1] > 0:
+            self.blocks[0].y = -20
+        elif self.blocks[0].x <= -20 and self.vel[0] < 0:
+            self.blocks[0].x = dis_width - 20
+        elif self.blocks[0].y <= -20 and self.vel[1] < 0:
+            self.blocks[0].y = dis_height - 20
+
+        clock.tick(5)
+
+    def grow(self):
+        self.length += 1
+        self.blocks += [Position(self.blocks[-1].x, self.blocks[-1].x, size)]
 
 
 def game_loop():
@@ -76,4 +101,3 @@ while not game_over:
 
 pygame.quit()
 quit()
-
