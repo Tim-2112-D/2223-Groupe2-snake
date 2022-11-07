@@ -17,8 +17,9 @@ def drawGrid():
     blockSize = 20  # Set the size of the grid block
     for x in range(0, dis_width, blockSize):
         for y in range(0, dis_height, blockSize):
-            rect = pygame.Rect(x, y, blockSize, blockSize)
+            # rect = pygame.Rect(x, y, blockSize, blockSize)
             # pygame.draw.rect(dis, WHITE, rect, 1)
+            pass
 
 
 class Position:
@@ -33,7 +34,11 @@ class Position:
 
 class Snake:
     def __init__(self, xpos, ypos):
-        self.blocks = [Position(xpos, ypos, size), Position(xpos - size, ypos, size), Position(xpos - 2 * size, ypos, size)]
+        self.blocks = [
+            Position(xpos, ypos, size),
+            Position(xpos - size, ypos, size),
+            Position(xpos - 2 * size, ypos, size),
+        ]
         self.vel = [size, 0]
         self.length = 3
 
@@ -59,7 +64,9 @@ class Snake:
 
     def move(self):
 
-        self.blocks = [Position(self.blocks[0].x, self.blocks[0].y, size)] + self.blocks[0:-1]
+        self.blocks = [
+            Position(self.blocks[0].x, self.blocks[0].y, size)
+        ] + self.blocks[0:-1]
 
         self.blocks[0].x += self.vel[0]
         self.blocks[0].y += self.vel[1]
