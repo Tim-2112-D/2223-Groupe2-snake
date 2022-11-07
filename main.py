@@ -14,10 +14,9 @@ clock = pygame.time.Clock()
 
 
 def drawGrid():
-    blockSize = 20  # Set the size of the grid block
-    for x in range(0, dis_width, blockSize):
-        for y in range(0, dis_height, blockSize):
-            # rect = pygame.Rect(x, y, blockSize, blockSize)
+    for x in range(0, dis_width, size):
+        for y in range(0, dis_height, size):
+            # rect = pygame.Rect(x, y, size, size)
             # pygame.draw.rect(dis, WHITE, rect, 1)
             pass
 
@@ -39,10 +38,10 @@ class Position:
 
 
 class Snake:
-    def __init__(self, xpos, ypos):
+    def __init__(self, x_pos, y_pos):
         self.length = 3
         self.blocks = [
-            Position(xpos - i * size, ypos, size) for i in range(self.length)
+            Position(x_pos - i * size, y_pos, size) for i in range(self.length)
         ]
         self.vel = Velocity(size, 0)
 
@@ -73,10 +72,10 @@ class Snake:
 
         self.blocks[0].x += self.vel.x
         self.blocks[0].y += self.vel.y
-        if self.blocks[0].x >= dis_width - 20 and self.vel.x > 0:
-            self.blocks[0].x = -20
-        elif self.blocks[0].y >= dis_height - 20 and self.vel.y > 0:
-            self.blocks[0].y = -20
+        if self.blocks[0].x >= dis_width and self.vel.x > 0:
+            self.blocks[0].x = 0
+        elif self.blocks[0].y >= dis_height and self.vel.y > 0:
+            self.blocks[0].y = 0
         elif self.blocks[0].x <= -20 and self.vel.x < 0:
             self.blocks[0].x = dis_width - 20
         elif self.blocks[0].y <= -20 and self.vel.y < 0:
