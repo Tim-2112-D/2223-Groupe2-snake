@@ -22,6 +22,12 @@ def drawGrid():
             pass
 
 
+class Velocity:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+
 class Position:
     def __init__(self, x, y, width):
         self.x = x
@@ -39,7 +45,7 @@ class Snake:
             Position(xpos - size, ypos, size),
             Position(xpos - 2 * size, ypos, size),
         ]
-        self.vel = [size, 0]
+        self.vel = Velocity(size, 0)
         self.length = 3
 
     def draw(self):
@@ -47,18 +53,18 @@ class Snake:
             block.draw()
 
     def keys(self, event):
-        if event.key == pygame.K_LEFT and self.vel[0] == 0:
-            self.vel[0] = -20
-            self.vel[1] = 0
-        elif event.key == pygame.K_RIGHT and self.vel[0] == 0:
-            self.vel[0] = 20
-            self.vel[1] = 0
-        elif event.key == pygame.K_UP and self.vel[1] == 0:
-            self.vel[0] = 0
-            self.vel[1] = -20
-        elif event.key == pygame.K_DOWN and self.vel[1] == 0:
-            self.vel[0] = 0
-            self.vel[1] = 20
+        if event.key == pygame.K_LEFT and self.vel.x == 0:
+            self.vel.x = -20
+            self.vel.y = 0
+        elif event.key == pygame.K_RIGHT and self.vel.x == 0:
+            self.vel.x = 20
+            self.vel.y = 0
+        elif event.key == pygame.K_UP and self.vel.y == 0:
+            self.vel.x = 0
+            self.vel.y = -20
+        elif event.key == pygame.K_DOWN and self.vel.y == 0:
+            self.vel.x = 0
+            self.vel.y = 20
         elif event.key == pygame.K_SPACE:
             self.grow()
 
@@ -68,15 +74,15 @@ class Snake:
             Position(self.blocks[0].x, self.blocks[0].y, size)
         ] + self.blocks[0:-1]
 
-        self.blocks[0].x += self.vel[0]
-        self.blocks[0].y += self.vel[1]
-        if self.blocks[0].x >= dis_width - 20 and self.vel[0] > 0:
+        self.blocks[0].x += self.vel.x
+        self.blocks[0].y += self.vel.y
+        if self.blocks[0].x >= dis_width - 20 and self.vel.x > 0:
             self.blocks[0].x = -20
-        elif self.blocks[0].y >= dis_height - 20 and self.vel[1] > 0:
+        elif self.blocks[0].y >= dis_height - 20 and self.vel.y > 0:
             self.blocks[0].y = -20
-        elif self.blocks[0].x <= -20 and self.vel[0] < 0:
+        elif self.blocks[0].x <= -20 and self.vel.x < 0:
             self.blocks[0].x = dis_width - 20
-        elif self.blocks[0].y <= -20 and self.vel[1] < 0:
+        elif self.blocks[0].y <= -20 and self.vel.y < 0:
             self.blocks[0].y = dis_height - 20
 
         clock.tick(5)
