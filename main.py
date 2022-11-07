@@ -40,13 +40,11 @@ class Position:
 
 class Snake:
     def __init__(self, xpos, ypos):
+        self.length = 3
         self.blocks = [
-            Position(xpos, ypos, size),
-            Position(xpos - size, ypos, size),
-            Position(xpos - 2 * size, ypos, size),
+            Position(xpos - i * size, ypos, size) for i in range(self.length)
         ]
         self.vel = Velocity(size, 0)
-        self.length = 3
 
     def draw(self):
         for block in self.blocks:
@@ -65,14 +63,13 @@ class Snake:
         elif event.key == pygame.K_DOWN and self.vel.y == 0:
             self.vel.x = 0
             self.vel.y = 20
+        # cheat until apples are implemented
         elif event.key == pygame.K_SPACE:
             self.grow()
 
     def move(self):
-
-        self.blocks = [
-            Position(self.blocks[0].x, self.blocks[0].y, size)
-        ] + self.blocks[0:-1]
+        self.blocks = [Position(self.blocks[0].x, self.blocks[0].y, size)] + self.blocks
+        self.blocks.pop(-1)
 
         self.blocks[0].x += self.vel.x
         self.blocks[0].y += self.vel.y
