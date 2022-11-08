@@ -1,5 +1,7 @@
 import pygame
 
+# import time
+
 pygame.init()
 
 dis_width = 600
@@ -67,8 +69,8 @@ class Snake:
             self.grow()
 
     def move(self):
-        self.blocks = [Position(self.blocks[0].x, self.blocks[0].y, size)] + self.blocks
         self.blocks.pop(-1)
+        self.blocks = [Position(self.blocks[0].x, self.blocks[0].y, size)] + self.blocks
 
         self.blocks[0].x += self.vel.x
         self.blocks[0].y += self.vel.y
