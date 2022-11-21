@@ -12,10 +12,10 @@ size = 20
 dis = pygame.display.set_mode((dis_width, dis_height))
 pygame.display.set_caption("Snake")
 
-programIcon = pygame.image.load('icon.png')
+programIcon = pygame.image.load("icon.png")
 pygame.display.set_icon(programIcon)
 
-IMAGE = pygame.image.load('icon.png').convert()  # or .convert_alpha()
+IMAGE = pygame.image.load("icon.png").convert()  # or .convert_alpha()
 IMAGE = pygame.transform.scale(IMAGE, (size, size))
 
 clock = pygame.time.Clock()
@@ -24,8 +24,8 @@ clock = pygame.time.Clock()
 def drawGrid():
     for x in range(0, dis_width, size):
         for y in range(0, dis_height, size):
-            rect = pygame.Rect(x, y, size, size)
-            pygame.draw.rect(dis, rect, 1)
+            # rect = pygame.Rect(x, y, size, size)
+            # pygame.draw.rect(dis, rect, 1)
             pass
 
 
@@ -51,9 +51,9 @@ class Snake:
     def __init__(self, x_pos, y_pos):
         self.length = 10
         self.blocks = [
-            Position(x_pos - i * size/10, y_pos, size) for i in range(self.length)
+            Position(x_pos - i * size, y_pos, size) for i in range(self.length)
         ]
-        self.vel = Velocity(size/10, 0)
+        self.vel = Velocity(size / 10, 0)
 
     def draw(self):
         for block in self.blocks:
@@ -61,17 +61,17 @@ class Snake:
 
     def keys(self, event):
         if event.key == pygame.K_LEFT and self.vel.x == 0:
-            self.vel.x = -size/10
+            self.vel.x = -size / 10
             self.vel.y = 0
         elif event.key == pygame.K_RIGHT and self.vel.x == 0:
-            self.vel.x = size/10
+            self.vel.x = size / 10
             self.vel.y = 0
         elif event.key == pygame.K_UP and self.vel.y == 0:
             self.vel.x = 0
-            self.vel.y = -size/10
+            self.vel.y = -size / 10
         elif event.key == pygame.K_DOWN and self.vel.y == 0:
             self.vel.x = 0
-            self.vel.y = size/10
+            self.vel.y = size / 10
         # cheat until apples are implemented
         elif event.key == pygame.K_SPACE:
             self.grow()
@@ -103,7 +103,7 @@ def game_loop(time):
     if time % 10 == 0:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-             return True
+                return True
             if event.type == pygame.KEYDOWN:
                 player.keys(event)
     player.move()
