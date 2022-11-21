@@ -12,6 +12,12 @@ size = 20
 dis = pygame.display.set_mode((dis_width, dis_height))
 pygame.display.set_caption("Snake")
 
+programIcon = pygame.image.load('icon.png')
+pygame.display.set_icon(programIcon)
+
+IMAGE = pygame.image.load('icon.png').convert()  # or .convert_alpha()
+IMAGE = pygame.transform.scale(IMAGE, (size, size))
+
 clock = pygame.time.Clock()
 
 
@@ -35,8 +41,10 @@ class Position:
         self.y = y
         self.width = width
 
-    def draw(self):
-        pygame.draw.rect(dis, green, [self.x, self.y, self.width, self.width])
+    def draw(self, image=False):
+        rect = pygame.draw.rect(dis, green, [self.x, self.y, self.width, self.width])
+        if image is True:
+            dis.blit(IMAGE, rect)
 
 
 class Snake:
@@ -49,7 +57,7 @@ class Snake:
 
     def draw(self):
         for block in self.blocks:
-            block.draw()
+            block.draw(block == self.blocks[0])
 
     def keys(self, event):
         if event.key == pygame.K_LEFT and self.vel.x == 0:
