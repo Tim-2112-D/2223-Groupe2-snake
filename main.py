@@ -1,6 +1,4 @@
 import pygame
-import random
-
 
 # import time
 
@@ -26,8 +24,8 @@ clock = pygame.time.Clock()
 def drawGrid():
     for x in range(0, dis_width, size):
         for y in range(0, dis_height, size):
-            #rect = pygame.Rect(x, y, size, size)
-            #pygame.draw.rect(dis, 1)
+            rect = pygame.Rect(x, y, size, size)
+            pygame.draw.rect(dis, rect, 1)
             pass
 
 
@@ -53,7 +51,7 @@ class Snake:
     def __init__(self, x_pos, y_pos):
         self.length = 10
         self.blocks = [
-            Position(x_pos - i * size, y_pos, size) for i in range(self.length)
+            Position(x_pos - i * size/10, y_pos, size) for i in range(self.length)
         ]
         self.vel = Velocity(size/10, 0)
 
@@ -97,12 +95,8 @@ class Snake:
 
     def grow(self):
         self.length += 1
-        self.blocks.append(Position(self.blocks[-1].x, self.blocks[-1].y, size))
+        self.blocks.append(Position(self.blocks[-1].x, self.blocks[-1].x, size))
 
-class Apple:
-    def __init__(self):
-        self.size = size
-        self.x = random.randint(dis_width/size)
 
 def game_loop(time):
     drawGrid()
