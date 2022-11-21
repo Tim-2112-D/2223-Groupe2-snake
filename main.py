@@ -87,7 +87,7 @@ class Snake:
 
     def grow(self):
         self.length += 1
-        self.blocks += [Position(self.blocks[-1].x, self.blocks[-1].x, size)]
+        self.blocks.append(Position(self.blocks[-1].x, self.blocks[-1].x, size))
 
 
 def game_loop():
