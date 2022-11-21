@@ -80,6 +80,7 @@ class Snake:
             self.grow()
 
     def move(self):
+        # counter until block has to move
         self.counter += 1
         if self.counter >= size / speed:
             self.block_vel.pop(-1)
