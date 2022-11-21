@@ -24,8 +24,8 @@ clock = pygame.time.Clock()
 def drawGrid():
     for x in range(0, dis_width, size):
         for y in range(0, dis_height, size):
-            # rect = pygame.Rect(x, y, size, size)
-            # pygame.draw.rect(dis, WHITE, rect, 1)
+            rect = pygame.Rect(x, y, size, size)
+            pygame.draw.rect(dis, rect, 1)
             pass
 
 
@@ -49,11 +49,11 @@ class Position:
 
 class Snake:
     def __init__(self, x_pos, y_pos):
-        self.length = 3
+        self.length = 10
         self.blocks = [
-            Position(x_pos - i * size, y_pos, size) for i in range(self.length)
+            Position(x_pos - i * size/10, y_pos, size) for i in range(self.length)
         ]
-        self.vel = Velocity(size, 0)
+        self.vel = Velocity(size/10, 0)
 
     def draw(self):
         for block in self.blocks:
@@ -61,17 +61,17 @@ class Snake:
 
     def keys(self, event):
         if event.key == pygame.K_LEFT and self.vel.x == 0:
-            self.vel.x = -20
+            self.vel.x = -size/10
             self.vel.y = 0
         elif event.key == pygame.K_RIGHT and self.vel.x == 0:
-            self.vel.x = 20
+            self.vel.x = size/10
             self.vel.y = 0
         elif event.key == pygame.K_UP and self.vel.y == 0:
             self.vel.x = 0
-            self.vel.y = -20
+            self.vel.y = -size/10
         elif event.key == pygame.K_DOWN and self.vel.y == 0:
             self.vel.x = 0
-            self.vel.y = 20
+            self.vel.y = size/10
         # cheat until apples are implemented
         elif event.key == pygame.K_SPACE:
             self.grow()
@@ -91,20 +91,21 @@ class Snake:
         elif self.blocks[0].y <= -20 and self.vel.y < 0:
             self.blocks[0].y = dis_height - 20
 
-        clock.tick(5)
+        clock.tick(30)
 
     def grow(self):
         self.length += 1
         self.blocks.append(Position(self.blocks[-1].x, self.blocks[-1].x, size))
 
 
-def game_loop():
+def game_loop(time):
     drawGrid()
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            return True
-        if event.type == pygame.KEYDOWN:
-            player.keys(event)
+    if time % 10 == 0:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+             return True
+            if event.type == pygame.KEYDOWN:
+                player.keys(event)
     player.move()
 
     dis.fill("#FFFFFF")
@@ -115,8 +116,10 @@ def game_loop():
 
 game_over = False
 player = Snake(40, 40)
+time = 0
 while not game_over:
-    game_over = game_loop()
+    time += 1
+    game_over = game_loop(time)
 
 pygame.quit()
 quit()
