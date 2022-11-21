@@ -8,6 +8,7 @@ dis_width = 600
 dis_height = 600
 green = "#32CD32"
 size = 20
+speed = 2
 
 dis = pygame.display.set_mode((dis_width, dis_height))
 pygame.display.set_caption("Snake")
@@ -49,11 +50,13 @@ class Position:
 
 class Snake:
     def __init__(self, x_pos, y_pos):
-        self.length = 10
+        self.counter = 0
+        self.length = 4
         self.blocks = [
             Position(x_pos - i * size, y_pos, size) for i in range(self.length)
         ]
-        self.vel = Velocity(size / 10, 0)
+        self.vel = Velocity(speed, 0)
+        self.block_vel = [Velocity(speed, 0) for i in range(self.length)]
 
     def draw(self):
         for block in self.blocks:
@@ -61,46 +64,58 @@ class Snake:
 
     def keys(self, event):
         if event.key == pygame.K_LEFT and self.vel.x == 0:
-            self.vel.x = -size / 10
+            self.vel.x = -speed
             self.vel.y = 0
         elif event.key == pygame.K_RIGHT and self.vel.x == 0:
-            self.vel.x = size / 10
+            self.vel.x = speed
             self.vel.y = 0
         elif event.key == pygame.K_UP and self.vel.y == 0:
             self.vel.x = 0
-            self.vel.y = -size / 10
+            self.vel.y = -speed
         elif event.key == pygame.K_DOWN and self.vel.y == 0:
             self.vel.x = 0
-            self.vel.y = size / 10
+            self.vel.y = speed
         # cheat until apples are implemented
         elif event.key == pygame.K_SPACE:
             self.grow()
 
     def move(self):
-        self.blocks.pop(-1)
-        self.blocks = [Position(self.blocks[0].x, self.blocks[0].y, size)] + self.blocks
+        self.counter += 1
+        if self.counter >= size / speed:
+            self.block_vel.pop(-1)
+            self.block_vel = [Velocity(self.vel.x, self.vel.y)] + self.block_vel
+            self.counter = 0
 
-        self.blocks[0].x += self.vel.x
-        self.blocks[0].y += self.vel.y
-        if self.blocks[0].x >= dis_width and self.vel.x > 0:
-            self.blocks[0].x = 0
-        elif self.blocks[0].y >= dis_height and self.vel.y > 0:
-            self.blocks[0].y = 0
-        elif self.blocks[0].x <= -20 and self.vel.x < 0:
-            self.blocks[0].x = dis_width - 20
-        elif self.blocks[0].y <= -20 and self.vel.y < 0:
-            self.blocks[0].y = dis_height - 20
+        for i in range(self.length):
+            self.blocks[i].x += self.block_vel[i].x
+            self.blocks[i].y += self.block_vel[i].y
+
+            if self.blocks[i].x >= dis_width and self.block_vel[i].x > 0:
+                self.blocks[i].x = 0
+            elif self.blocks[i].y >= dis_height and self.block_vel[i].y > 0:
+                self.blocks[i].y = 0
+            elif self.blocks[i].x <= -20 and self.block_vel[i].x < 0:
+                self.blocks[i].x = dis_width - 20
+            elif self.blocks[i].y <= -20 and self.block_vel[i].y < 0:
+                self.blocks[i].y = dis_height - 20
 
         clock.tick(30)
 
     def grow(self):
         self.length += 1
-        self.blocks.append(Position(self.blocks[-1].x, self.blocks[-1].x, size))
+        self.blocks.append(
+            Position(
+                self.blocks[-1].x - self.block_vel[-1].x / speed * size,
+                self.blocks[-1].y - self.block_vel[-1].y / speed * size,
+                size,
+            )
+        )
+        self.block_vel.append(Velocity(self.block_vel[-1].x, self.block_vel[-1].y))
 
 
 def game_loop(time):
     drawGrid()
-    if time % 10 == 0:
+    if time % size / speed == 0:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return True
