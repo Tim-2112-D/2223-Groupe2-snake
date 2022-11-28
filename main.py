@@ -9,6 +9,7 @@ DIS_HEIGHT = 600
 GREEN = "#32CD32"
 SIZE = 20
 SPEED = 2
+FPS = 30
 
 dis = pygame.display.set_mode((DIS_WIDTH, DIS_HEIGHT))
 pygame.display.set_caption("Snake")
@@ -22,14 +23,6 @@ IMAGE = pygame.transform.scale(IMAGE, (SIZE, SIZE))
 clock = pygame.time.Clock()
 
 
-def drawGrid():
-    for x in range(0, DIS_WIDTH, SIZE):
-        for y in range(0, DIS_HEIGHT, SIZE):
-            # rect = pygame.Rect(x, y, size, size)
-            # pygame.draw.rect(dis, rect, 1)
-            pass
-
-
 class Velocity:
     def __init__(self, x, y):
         self.x = x
@@ -41,11 +34,15 @@ class Position:
         self.x = x
         self.y = y
         self.width = width
+        self.rect = None
 
-    def draw(self, image=False):
-        rect = pygame.draw.rect(dis, GREEN, [self.x, self.y, self.width, self.width])
-        if image is True:
-            dis.blit(IMAGE, rect)
+    def draw(self):
+        self.rect = pygame.draw.rect(
+            dis, GREEN, [self.x, self.y, self.width, self.width]
+        )
+
+    def paint_head(self):
+        dis.blit(IMAGE, self.rect)
 
 
 class Snake:
@@ -63,7 +60,8 @@ class Snake:
         for corner in corners:
             pygame.draw.rect(dis, GREEN, [corner[0], corner[1], SIZE, SIZE])
         for i in range(len(self.blocks)):
-            self.blocks[i].draw(self.blocks[i] == self.blocks[0])
+            self.blocks[i].draw()
+        self.blocks[0].paint_head()
 
     def find_corner(self):
         corner_pos = set(())
@@ -97,6 +95,7 @@ class Snake:
         elif event.key == pygame.K_DOWN and self.vel.y == 0:
             self.vel.x = 0
             self.vel.y = SPEED
+
         # cheat until apples are implemented
         elif event.key == pygame.K_SPACE:
             self.grow()
@@ -122,7 +121,7 @@ class Snake:
             elif self.blocks[i].y <= -20 and self.block_vel[i].y < 0:
                 self.blocks[i].y = DIS_HEIGHT - 20
 
-        clock.tick(30)
+        clock.tick(FPS)
 
     def grow(self):
         self.length += 1
@@ -136,28 +135,29 @@ class Snake:
         self.block_vel.append(Velocity(self.block_vel[-1].x, self.block_vel[-1].y))
 
 
-def game_loop(time):
-    drawGrid()
-    if time % SIZE / SPEED == 0:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return True
-            if event.type == pygame.KEYDOWN:
-                player.keys(event)
+def game_loop(time, counter):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            return True
+        if event.type == pygame.KEYDOWN and counter > FPS / 5:
+            player.keys(event)
+            counter = 0
     player.move()
+    counter += 1
 
     dis.fill("#FFFFFF")
     player.draw()
     pygame.display.update()
-    return False
+    return False, counter
 
 
 game_over = False
 player = Snake(40, 40)
 time = 0
+counter = 0
 while not game_over:
+    game_over, counter = game_loop(time, counter)
     time += 1
-    game_over = game_loop(time)
 
 pygame.quit()
 quit()
