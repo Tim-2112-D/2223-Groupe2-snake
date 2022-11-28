@@ -113,13 +113,13 @@ class Snake:
             self.blocks[i].y += self.block_vel[i].y
 
             if self.blocks[i].x >= DIS_WIDTH and self.block_vel[i].x > 0:
-                self.blocks[i].x = 0
+                self.blocks[i].x = -SIZE
             elif self.blocks[i].y >= DIS_HEIGHT and self.block_vel[i].y > 0:
-                self.blocks[i].y = 0
-            elif self.blocks[i].x <= -20 and self.block_vel[i].x < 0:
-                self.blocks[i].x = DIS_WIDTH - 20
-            elif self.blocks[i].y <= -20 and self.block_vel[i].y < 0:
-                self.blocks[i].y = DIS_HEIGHT - 20
+                self.blocks[i].y = -SIZE
+            elif self.blocks[i].x <= 0 and self.block_vel[i].x < 0:
+                self.blocks[i].x = DIS_WIDTH
+            elif self.blocks[i].y <= 0 and self.block_vel[i].y < 0:
+                self.blocks[i].y = DIS_HEIGHT
 
         clock.tick(FPS)
 
