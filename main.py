@@ -136,6 +136,7 @@ class Snake:
 
 
 def game_loop(time, counter):
+    # time will later be used for score
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return True
@@ -154,9 +155,9 @@ def game_loop(time, counter):
 game_over = False
 player = Snake(40, 40)
 time = 0
-counter = 0
+count = 0
 while not game_over:
-    game_over, counter = game_loop(time, counter)
+    game_over, count = game_loop(time, count)
     time += 1
 
 pygame.quit()
