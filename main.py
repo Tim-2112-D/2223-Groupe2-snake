@@ -1,15 +1,13 @@
 import pygame
 
-# import time
-
-pygame.init()
-
 DIS_WIDTH = 600
 DIS_HEIGHT = 600
 GREEN = "#32CD32"
 SIZE = 20
 SPEED = 2
 FPS = 30
+
+pygame.init()
 
 dis = pygame.display.set_mode((DIS_WIDTH, DIS_HEIGHT))
 pygame.display.set_caption("Snake")
