@@ -76,7 +76,7 @@ class Snake:
                 vec1[0] * self.blocks[i - 1].x + vec2[0] * self.blocks[i].x,
                 vec1[1] * self.blocks[i - 1].y + vec2[1] * self.blocks[i].y,
             )
-            if 0 not in pos:
+            if (vec1[0] + vec2[0]) * (vec1[1] + vec2[1]) != 0:
                 corner_pos.add(pos)
         return corner_pos
 
@@ -136,7 +136,7 @@ class Snake:
                 c += 1
         if (
             self.blocks[0].x > DIS_WIDTH - SIZE
-            or self.blocks[0].x < 0
+            or self.blocks[0].x < -2
             or self.blocks[0].y > DIS_HEIGHT - SIZE
             or self.blocks[0].y < 0
         ):
