@@ -15,8 +15,11 @@ pygame.display.set_caption("Snake")
 programIcon = pygame.image.load("icon.png")
 pygame.display.set_icon(programIcon)
 
-IMAGE = pygame.image.load("icon.png").convert()  # or .convert_alpha()
-IMAGE = pygame.transform.scale(IMAGE, (SIZE, SIZE))
+IMAGE1 = pygame.image.load("icon.png").convert()  # or .convert_alpha()
+IMAGE1 = pygame.transform.scale(IMAGE1, (SIZE, SIZE))
+
+IMAGE2 = pygame.image.load("TIM_snake_face.png").convert()  # or .convert_alpha()
+IMAGE2 = pygame.transform.scale(IMAGE2, (SIZE, SIZE))
 
 clock = pygame.time.Clock()
 
@@ -28,11 +31,12 @@ class Velocity:
 
 
 class Position:
-    def __init__(self, x, y, width):
+    def __init__(self, x, y, width, Image):
         self.x = x
         self.y = y
         self.width = width
         self.rect = None
+        self.Image = Image
 
     def draw(self):
         self.rect = pygame.draw.rect(
@@ -40,15 +44,17 @@ class Position:
         )
 
     def paint_head(self):
-        dis.blit(IMAGE, self.rect)
+        dis.blit(self.Image, self.rect)
 
 
 class Snake:
-    def __init__(self, x_pos, y_pos):
+    def __init__(self, x_pos, y_pos, keyboard, image):
         self.counter = 0
         self.length = 4
+        self.keyboard = keyboard    #This variable will help us attribute the good keys (1 for player one, 2 for player 2)
+        self.image = image
         self.blocks = [
-            Position(x_pos - i * SIZE, y_pos, SIZE) for i in range(self.length)
+            Position(x_pos - i * SIZE, y_pos, SIZE, self.image) for i in range(self.length)
         ]
         self.vel = Velocity(SPEED, 0)
         self.block_vel = [Velocity(SPEED, 0) for i in range(self.length)]
@@ -80,23 +86,41 @@ class Snake:
                 corner_pos.add(pos)
         return corner_pos
 
-    def keys(self, event):
-        if event.key == pygame.K_LEFT and self.vel.x == 0:
-            self.vel.x = -SPEED
-            self.vel.y = 0
-        elif event.key == pygame.K_RIGHT and self.vel.x == 0:
-            self.vel.x = SPEED
-            self.vel.y = 0
-        elif event.key == pygame.K_UP and self.vel.y == 0:
-            self.vel.x = 0
-            self.vel.y = -SPEED
-        elif event.key == pygame.K_DOWN and self.vel.y == 0:
-            self.vel.x = 0
-            self.vel.y = SPEED
+    def keys(self, event):      #Gives the good key depending on the snake (int keyboard)
+        if self.keyboard == 1:
+            if event.key == pygame.K_LEFT and self.vel.x == 0:
+                self.vel.x = -SPEED
+                self.vel.y = 0
+            elif event.key == pygame.K_RIGHT and self.vel.x == 0:
+                self.vel.x = SPEED
+                self.vel.y = 0
+            elif event.key == pygame.K_UP and self.vel.y == 0:
+                self.vel.x = 0
+                self.vel.y = -SPEED
+            elif event.key == pygame.K_DOWN and self.vel.y == 0:
+                self.vel.x = 0
+                self.vel.y = SPEED
 
-        # cheat until apples are implemented
-        elif event.key == pygame.K_SPACE:
-            self.grow()
+            # cheat until apples are implemented
+            elif event.key == pygame.K_SPACE:
+                self.grow()
+        else:
+            if event.key == pygame.K_q and self.vel.x == 0:
+                self.vel.x = -SPEED
+                self.vel.y = 0
+            elif event.key == pygame.K_d and self.vel.x == 0:
+                self.vel.x = SPEED
+                self.vel.y = 0
+            elif event.key == pygame.K_z and self.vel.y == 0:
+                self.vel.x = 0
+                self.vel.y = -SPEED
+            elif event.key == pygame.K_s and self.vel.y == 0:
+                self.vel.x = 0
+                self.vel.y = SPEED
+
+            # cheat until apples are implemented
+            elif event.key == pygame.K_SPACE:
+                self.grow()
 
     def move(self):
         # counter until block has to move
@@ -118,7 +142,7 @@ class Snake:
             Position(
                 self.blocks[-1].x - self.block_vel[-1].x / SPEED * SIZE,
                 self.blocks[-1].y - self.block_vel[-1].y / SPEED * SIZE,
-                SIZE,
+                SIZE, self.image
             )
         )
         self.block_vel.append(Velocity(self.block_vel[-1].x, self.block_vel[-1].y))
@@ -173,10 +197,9 @@ def game_loop(time, counter):
     pygame.display.update()
     return False, counter
 
-
 game_over = False
-player1 = Snake(40, 40)
-player2 = Snake (40, DIS_HEIGHT - 150)
+player1 = Snake(40, 40, 1, IMAGE1)
+player2 = Snake (40, DIS_HEIGHT - 150, 2, IMAGE2)
 time = 0
 count = 0
 while not game_over:
