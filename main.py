@@ -204,15 +204,15 @@ class Snake:
             c += 1
         return c == 0
 
-    #def intersection(self, snake):
-        #c = 0
-        #for i in range(snake.length):
-            #if (
-                    #snake.blocks[i].x - SIZE < self.blocks[0].x < snake.blocks[i].x + SIZE
-                    #and snake.blocks[i].y - SIZE < self.blocks[0].y < snake.blocks[i].y + SIZE
-            #):
-               # c += 1
-        #return c == 0
+    def intersection(self, snake):
+        c = 0
+        for i in range(snake.length):
+            if (
+                    snake.blocks[i].x - SIZE < self.blocks[0].x < snake.blocks[i].x + SIZE
+                    and snake.blocks[i].y - SIZE < self.blocks[0].y < snake.blocks[i].y + SIZE
+            ):
+                c += 1
+        return c == 0
 
 
 def game_loop(time, counter):
