@@ -143,6 +143,15 @@ class Snake:
             c += 1
         return c == 0
 
+    def intersection(self, snake):
+        c = 0
+        for i in range(snake.length):
+            if self.blocks(0) == snake.blocks[i]:
+                c += 1
+        return c == 0
+
+
+
 
 def game_loop(time, counter):
     # time will later be used for score
