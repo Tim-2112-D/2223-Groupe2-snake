@@ -200,23 +200,22 @@ class Snake:
 
     def intersect(self):
         # We check if the head connects with the body.
-        # We check the intersection after the third block
-        # because when the snake turns, the second and third block touch the first one
-        c = 0
+        # We check the intersection after the third block because when the snake turns,
+        # the second and third block touch the first one
         for i in range(3, self.length):
             if (
                 self.blocks[i].x - SIZE < self.blocks[0].x < self.blocks[i].x + SIZE
                 and self.blocks[i].y - SIZE < self.blocks[0].y < self.blocks[i].y + SIZE
             ):
-                c += 1
+                return False
         if (
             self.blocks[0].x > DIS_WIDTH - SIZE
             or self.blocks[0].x < -2
             or self.blocks[0].y > DIS_HEIGHT - SIZE
             or self.blocks[0].y < 0
         ):
-            c += 1
-        return c == 0
+            return False
+        return True
 
     def intersection(self, snake):
         for block1 in snake.blocks:
