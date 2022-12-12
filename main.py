@@ -133,13 +133,25 @@ class Snake:
         self.block_vel.append(Velocity(self.block_vel[-1].x, self.block_vel[-1].y))
 
     def intersect(self):
+        # We check if the head connects with the body.
+        # We check the intersection after the third block
+        # because when the snake turns, the second and third block touch the first one
         c = 0
-        for i in range (3, self.length):        ##We check if the head connects with the body. We check the intersection after the third block because when the snake turns, the second and third block touch the first one
-            if self.blocks[0].x < self.blocks[i].x + SIZE and self.blocks[0].x > self.blocks[i].x - SIZE and self.blocks[0].y < self.blocks[i].y + SIZE and self.blocks[0].y > self.blocks[i].y - SIZE:
+        for i in range(3, self.length):
+            if (
+                self.blocks[i].x - SIZE < self.blocks[0].x < self.blocks[i].x + SIZE
+                and self.blocks[i].y - SIZE < self.blocks[0].y < self.blocks[i].y + SIZE
+            ):
                 c += 1
-        if self.blocks[0].x > DIS_WIDTH or self.blocks[0].x < 0 or self.blocks[0].y > DIS_HEIGHT or self.blocks[0].y < 0:
+        if (
+            self.blocks[0].x > DIS_WIDTH
+            or self.blocks[0].x < 0
+            or self.blocks[0].y > DIS_HEIGHT
+            or self.blocks[0].y < 0
+        ):
             c += 1
         return c == 0
+
 
 def game_loop(time, counter):
     # time will later be used for score
@@ -165,7 +177,7 @@ count = 0
 while not game_over:
     game_over, count = game_loop(time, count)
     time += 1
-    if Snake.intersect() is False:
+    if player.intersect() is False:
         pygame.quit()
         quit()
 
