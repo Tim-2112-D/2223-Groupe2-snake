@@ -110,15 +110,6 @@ class Snake:
             self.blocks[i].x += self.block_vel[i].x
             self.blocks[i].y += self.block_vel[i].y
 
-            if self.blocks[i].x >= DIS_WIDTH and self.block_vel[i].x > 0:
-                self.blocks[i].x = -SIZE
-            elif self.blocks[i].y >= DIS_HEIGHT and self.block_vel[i].y > 0:
-                self.blocks[i].y = -SIZE
-            elif self.blocks[i].x <= 0 and self.block_vel[i].x < 0:
-                self.blocks[i].x = DIS_WIDTH
-            elif self.blocks[i].y <= 0 and self.block_vel[i].y < 0:
-                self.blocks[i].y = DIS_HEIGHT
-
         clock.tick(FPS)
 
     def grow(self):
@@ -144,9 +135,9 @@ class Snake:
             ):
                 c += 1
         if (
-            self.blocks[0].x > DIS_WIDTH
+            self.blocks[0].x > DIS_WIDTH - SIZE
             or self.blocks[0].x < 0
-            or self.blocks[0].y > DIS_HEIGHT
+            or self.blocks[0].y > DIS_HEIGHT - SIZE
             or self.blocks[0].y < 0
         ):
             c += 1
