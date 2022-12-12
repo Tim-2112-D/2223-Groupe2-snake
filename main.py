@@ -1,8 +1,10 @@
 import pygame
+import random
 
 DIS_WIDTH = 600
 DIS_HEIGHT = 600
 GREEN = "#32CD32"
+RED = "#F22323"
 SIZE = 20
 SPEED = 2
 FPS = 30
@@ -31,30 +33,55 @@ class Velocity:
 
 
 class Position:
-    def __init__(self, x, y, width, Image):
+    def __init__(self, x, y, width, form="rect", image=None):
         self.x = x
         self.y = y
         self.width = width
-        self.rect = None
-        self.Image = Image
+        self.form = form
+        self.object = None
+        self.image = image
 
-    def draw(self):
-        self.rect = pygame.draw.rect(
-            dis, GREEN, [self.x, self.y, self.width, self.width]
-        )
+    def draw(self, color):
+        if self.form == "rect":
+            self.object = pygame.draw.rect(
+                dis, color, [self.x, self.y, self.width, self.width]
+            )
+        elif self.form == "circle":
+            self.object = pygame.draw.circle(
+                dis, color, [self.x, self.y], self.width
+            )
 
     def paint_head(self):
-        dis.blit(self.Image, self.rect)
+        dis.blit(self.image, self.object)
+
+
+class Apple:
+    def __init__(self):
+        self.circle = Position(random.randint(SIZE, DIS_WIDTH-SIZE), random.randint(SIZE, DIS_WIDTH-SIZE), SIZE/2, "circle")
+
+    def draw(self):
+        self.circle.draw(RED)
+
+    def move(self):
+        self.circle.x = random.randint(SIZE, DIS_WIDTH-SIZE)
+        self.circle.y = random.randint(SIZE, DIS_WIDTH-SIZE)
+
+    def collide(self, player):
+        distance = pow((player.blocks[0].x - self.circle.x), 2) + pow((player.blocks[0].y - self.circle.y), 2)
+        if distance <= pow((player.blocks[0].width/2 + self.circle.width), 2):
+            self.move()
+            player.grow()
 
 
 class Snake:
     def __init__(self, x_pos, y_pos, keyboard, image):
         self.counter = 0
         self.length = 4
-        self.keyboard = keyboard    #This variable will help us attribute the good keys (1 for player one, 2 for player 2)
+        # This variable will help us attribute the good keys (1 for player one, 2 for player 2)
+        self.keyboard = keyboard
         self.image = image
         self.blocks = [
-            Position(x_pos - i * SIZE, y_pos, SIZE, self.image) for i in range(self.length)
+            Position(x_pos - i * SIZE, y_pos, SIZE, "rect", self.image) for i in range(self.length)
         ]
         self.vel = Velocity(SPEED, 0)
         self.block_vel = [Velocity(SPEED, 0) for i in range(self.length)]
@@ -64,7 +91,7 @@ class Snake:
         for corner in corners:
             pygame.draw.rect(dis, GREEN, [corner[0], corner[1], SIZE, SIZE])
         for i in range(len(self.blocks)):
-            self.blocks[i].draw()
+            self.blocks[i].draw(GREEN)
         self.blocks[0].paint_head()
 
     def find_corner(self):
@@ -86,7 +113,8 @@ class Snake:
                 corner_pos.add(pos)
         return corner_pos
 
-    def keys(self, event):      #Gives the good key depending on the snake (int keyboard)
+    # Gives the good key depending on the snake (int keyboard)
+    def keys(self, event):
         if self.keyboard == 1:
             if event.key == pygame.K_LEFT and self.vel.x == 0:
                 self.vel.x = -SPEED
@@ -142,7 +170,7 @@ class Snake:
             Position(
                 self.blocks[-1].x - self.block_vel[-1].x / SPEED * SIZE,
                 self.blocks[-1].y - self.block_vel[-1].y / SPEED * SIZE,
-                SIZE, self.image
+                SIZE, "rect", self.image
             )
         )
         self.block_vel.append(Velocity(self.block_vel[-1].x, self.block_vel[-1].y))
@@ -175,8 +203,6 @@ class Snake:
         return c == True
 
 
-
-
 def game_loop(time, counter):
     # time will later be used for score
     for event in pygame.event.get():
@@ -192,14 +218,19 @@ def game_loop(time, counter):
     counter += 1
 
     dis.fill("#FFFFFF")
+    apple.draw()
     player1.draw()
     player2.draw()
+    apple.collide(player1)
+    apple.collide(player2)
     pygame.display.update()
     return False, counter
 
+
 game_over = False
 player1 = Snake(40, 40, 1, IMAGE1)
-player2 = Snake (40, DIS_HEIGHT - 150, 2, IMAGE2)
+player2 = Snake(40, DIS_HEIGHT - 150, 2, IMAGE2)
+apple = Apple()
 time = 0
 count = 0
 while not game_over:
@@ -208,10 +239,10 @@ while not game_over:
     if not (player1.intersect() and player2.intersect()):
         pygame.quit()
         quit()
-    if player1.intersection(player2):
+    elif player1.intersection(player2):
         pygame.quit()
         quit()
-    if player2.intersection(player1):
+    elif player2.intersection(player1):
         pygame.quit()
         quit()
 
