@@ -70,10 +70,22 @@ class Apple:
         self.circle.y = random.randint(SIZE, DIS_WIDTH - SIZE)
 
     def collide(self, player):
-        distance = pow((player.blocks[0].x - self.circle.x), 2) + pow(
-            (player.blocks[0].y - self.circle.y), 2
+        x_dist = min(
+            [
+                player.blocks[0].x + player.blocks[0].width - self.circle.x,
+                player.blocks[0].x - self.circle.x,
+            ],
+            key=abs,
         )
-        if distance <= pow((player.blocks[0].width / 2 + self.circle.width), 2):
+        y_dist = min(
+            [
+                player.blocks[0].y + player.blocks[0].width - self.circle.y,
+                player.blocks[0].y - self.circle.y,
+            ],
+            key=abs,
+        )
+        distance = pow(x_dist, 2) + pow(y_dist, 2)
+        if distance <= pow(self.circle.width, 2):
             self.move()
             player.grow()
 
@@ -140,13 +152,15 @@ class Snake:
             elif event.key == pygame.K_SPACE:
                 self.grow()
         else:
-            if event.key == pygame.K_q and self.vel.x == 0:
+            if (event.key == pygame.K_q or event.key == pygame.K_a) and self.vel.x == 0:
                 self.vel.x = -SPEED
                 self.vel.y = 0
             elif event.key == pygame.K_d and self.vel.x == 0:
                 self.vel.x = SPEED
                 self.vel.y = 0
-            elif event.key == pygame.K_z and self.vel.y == 0:
+            elif (
+                event.key == pygame.K_z or event.key == pygame.K_w
+            ) and self.vel.y == 0:
                 self.vel.x = 0
                 self.vel.y = -SPEED
             elif event.key == pygame.K_s and self.vel.y == 0:
@@ -205,10 +219,13 @@ class Snake:
         return c == 0
 
     def intersection(self, snake):
-        for i in range(snake.length):
-            if self.blocks[0] == snake.blocks[i]:
-                pass
-        return True
+        for block1 in snake.blocks:
+            dist_x = abs(block1.x - self.blocks[0].x)
+            dist_y = abs(block1.y - self.blocks[0].y)
+            if dist_x + dist_y <= SIZE:
+                return True
+        else:
+            return False
 
 
 def game_loop(time, counter):
