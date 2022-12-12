@@ -146,9 +146,9 @@ class Snake:
     def intersection(self, snake):
         c = 0
         for i in range(snake.length):
-            if self.blocks(0) == snake.blocks[i]:
-                c += 1
-        return c == 0
+            if self.blocks[0] == snake.blocks[i]:
+                pass
+        return c == True
 
 
 
@@ -159,25 +159,36 @@ def game_loop(time, counter):
         if event.type == pygame.QUIT:
             return True
         if event.type == pygame.KEYDOWN and counter > FPS / 5:
-            player.keys(event)
+            player1.keys(event)
+            player2.keys(event)
             counter = 0
-    player.move()
+    player1.move()
+    player2.move()
+
     counter += 1
 
     dis.fill("#FFFFFF")
-    player.draw()
+    player1.draw()
+    player2.draw()
     pygame.display.update()
     return False, counter
 
 
 game_over = False
-player = Snake(40, 40)
+player1 = Snake(40, 40)
+player2 = Snake (40, DIS_HEIGHT - 150)
 time = 0
 count = 0
 while not game_over:
     game_over, count = game_loop(time, count)
     time += 1
-    if player.intersect() is False:
+    if not (player1.intersect() and player2.intersect()):
+        pygame.quit()
+        quit()
+    if player1.intersection(player2):
+        pygame.quit()
+        quit()
+    if player2.intersection(player1):
         pygame.quit()
         quit()
 
