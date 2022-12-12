@@ -47,9 +47,7 @@ class Position:
                 dis, color, [self.x, self.y, self.width, self.width]
             )
         elif self.form == "circle":
-            self.object = pygame.draw.circle(
-                dis, color, [self.x, self.y], self.width
-            )
+            self.object = pygame.draw.circle(dis, color, [self.x, self.y], self.width)
 
     def paint_head(self):
         dis.blit(self.image, self.object)
@@ -57,18 +55,25 @@ class Position:
 
 class Apple:
     def __init__(self):
-        self.circle = Position(random.randint(SIZE, DIS_WIDTH-SIZE), random.randint(SIZE, DIS_WIDTH-SIZE), SIZE/2, "circle")
+        self.circle = Position(
+            random.randint(SIZE, DIS_WIDTH - SIZE),
+            random.randint(SIZE, DIS_WIDTH - SIZE),
+            SIZE / 2,
+            "circle",
+        )
 
     def draw(self):
         self.circle.draw(RED)
 
     def move(self):
-        self.circle.x = random.randint(SIZE, DIS_WIDTH-SIZE)
-        self.circle.y = random.randint(SIZE, DIS_WIDTH-SIZE)
+        self.circle.x = random.randint(SIZE, DIS_WIDTH - SIZE)
+        self.circle.y = random.randint(SIZE, DIS_WIDTH - SIZE)
 
     def collide(self, player):
-        distance = pow((player.blocks[0].x - self.circle.x), 2) + pow((player.blocks[0].y - self.circle.y), 2)
-        if distance <= pow((player.blocks[0].width/2 + self.circle.width), 2):
+        distance = pow((player.blocks[0].x - self.circle.x), 2) + pow(
+            (player.blocks[0].y - self.circle.y), 2
+        )
+        if distance <= pow((player.blocks[0].width / 2 + self.circle.width), 2):
             self.move()
             player.grow()
 
@@ -77,11 +82,13 @@ class Snake:
     def __init__(self, x_pos, y_pos, keyboard, image):
         self.counter = 0
         self.length = 4
-        # This variable will help us attribute the good keys (1 for player one, 2 for player 2)
+        # This variable will help us attribute the good keys
+        # (1 for player one, 2 for player 2)
         self.keyboard = keyboard
         self.image = image
         self.blocks = [
-            Position(x_pos - i * SIZE, y_pos, SIZE, "rect", self.image) for i in range(self.length)
+            Position(x_pos - i * SIZE, y_pos, SIZE, "rect", self.image)
+            for i in range(self.length)
         ]
         self.vel = Velocity(SPEED, 0)
         self.block_vel = [Velocity(SPEED, 0) for i in range(self.length)]
@@ -170,7 +177,9 @@ class Snake:
             Position(
                 self.blocks[-1].x - self.block_vel[-1].x / SPEED * SIZE,
                 self.blocks[-1].y - self.block_vel[-1].y / SPEED * SIZE,
-                SIZE, "rect", self.image
+                SIZE,
+                "rect",
+                self.image,
             )
         )
         self.block_vel.append(Velocity(self.block_vel[-1].x, self.block_vel[-1].y))
@@ -196,11 +205,10 @@ class Snake:
         return c == 0
 
     def intersection(self, snake):
-        c = 0
         for i in range(snake.length):
             if self.blocks[0] == snake.blocks[i]:
                 pass
-        return c == True
+        return True
 
 
 def game_loop(time, counter):
