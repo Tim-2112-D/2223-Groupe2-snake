@@ -5,6 +5,7 @@ DIS_WIDTH = 600
 DIS_HEIGHT = 600
 GREEN = "#32CD32"
 RED = "#F22323"
+WHITE = "#FFFFFF"
 SIZE = 20
 SPEED = 2
 FPS = 30
@@ -17,10 +18,10 @@ pygame.display.set_caption("Snake")
 programIcon = pygame.image.load("icon.png")
 pygame.display.set_icon(programIcon)
 
-IMAGE1 = pygame.image.load("icon.png").convert()  # or .convert_alpha()
+IMAGE1 = pygame.image.load("Charles_face.png").convert_alpha()  # or .convert_alpha()
 IMAGE1 = pygame.transform.scale(IMAGE1, (SIZE, SIZE))
 
-IMAGE2 = pygame.image.load("TIM_snake_face.png").convert()  # or .convert_alpha()
+IMAGE2 = pygame.image.load("TIM_snake_face.png").convert_alpha()  # or .convert_alpha()
 IMAGE2 = pygame.transform.scale(IMAGE2, (SIZE, SIZE))
 
 clock = pygame.time.Clock()
@@ -109,7 +110,8 @@ class Snake:
         corners = self.find_corner()
         for corner in corners:
             pygame.draw.rect(dis, GREEN, [corner[0], corner[1], SIZE, SIZE])
-        for i in range(len(self.blocks)):
+        self.blocks[0].draw(GREEN)
+        for i in range(1, len(self.blocks)):
             self.blocks[i].draw(GREEN)
         self.blocks[0].paint_head()
 
@@ -241,7 +243,7 @@ def game_loop(time, counter):
 
     counter += 1
 
-    dis.fill("#FFFFFF")
+    dis.fill(WHITE)
     apple.draw()
     player1.draw()
     player2.draw()
