@@ -1,16 +1,19 @@
 import pygame
 import random
 
+pygame.init()
+
 DIS_WIDTH = 600
 DIS_HEIGHT = 600
 GREEN = "#32CD32"
 RED = "#F22323"
 WHITE = "#FFFFFF"
+BLACK = "#000000"
+GREY = "#878787"
+LARGE_FONT = pygame.font.SysFont("arial", 20)
 SIZE = 20
-SPEED = 2
 FPS = 30
 
-pygame.init()
 
 dis = pygame.display.set_mode((DIS_WIDTH, DIS_HEIGHT))
 pygame.display.set_caption("Snake")
@@ -93,7 +96,8 @@ class Apple:
 
 class Snake:
     def __init__(self, x_pos, y_pos, keyboard, image):
-        self.counter = 0
+        self.last_pause = 0
+        self.block_counter = 0
         self.length = 4
         # This variable will help us attribute the good keys
         # (1 for player one, 2 for player 2)
@@ -103,8 +107,12 @@ class Snake:
             Position(x_pos - i * SIZE, y_pos, SIZE, "rect", self.image)
             for i in range(self.length)
         ]
-        self.vel = Velocity(SPEED, 0)
-        self.block_vel = [Velocity(SPEED, 0) for i in range(self.length)]
+        self.speed = 2
+        self.vel = Velocity(self.speed, 0)
+        self.block_vel = [Velocity(self.speed, 0) for _ in range(self.length)]
+        self.score = LARGE_FONT.render(
+            f"Player {self.keyboard}: {self.length-4}", True, BLACK, GREY
+        )
 
     def draw(self):
         corners = self.find_corner()
@@ -114,6 +122,8 @@ class Snake:
         for i in range(1, len(self.blocks)):
             self.blocks[i].draw(GREEN)
         self.blocks[0].paint_head()
+
+        dis.blit(self.score, (500, -15 + 25 * self.keyboard))
 
     def find_corner(self):
         corner_pos = set(())
@@ -135,39 +145,49 @@ class Snake:
         return corner_pos
 
     # Gives the good key depending on the snake (int keyboard)
-    def keys(self, event):
-        if self.keyboard == 1:
+    def keys(self, event, counter):
+        if counter - self.last_pause <= FPS / 5:
+            pass
+        elif self.keyboard == 1:
             if event.key == pygame.K_LEFT and self.vel.x == 0:
-                self.vel.x = -SPEED
+                self.vel.x = -self.speed
                 self.vel.y = 0
+                self.last_pause = counter
             elif event.key == pygame.K_RIGHT and self.vel.x == 0:
-                self.vel.x = SPEED
+                self.vel.x = self.speed
                 self.vel.y = 0
+                self.last_pause = counter
             elif event.key == pygame.K_UP and self.vel.y == 0:
                 self.vel.x = 0
-                self.vel.y = -SPEED
+                self.vel.y = -self.speed
+                self.last_pause = counter
             elif event.key == pygame.K_DOWN and self.vel.y == 0:
                 self.vel.x = 0
-                self.vel.y = SPEED
+                self.vel.y = self.speed
+                self.last_pause = counter
 
             # cheat until apples are implemented
             elif event.key == pygame.K_SPACE:
                 self.grow()
-        else:
+        elif self.keyboard == 2:
             if (event.key == pygame.K_q or event.key == pygame.K_a) and self.vel.x == 0:
-                self.vel.x = -SPEED
+                self.vel.x = -self.speed
                 self.vel.y = 0
+                self.last_pause = counter
             elif event.key == pygame.K_d and self.vel.x == 0:
-                self.vel.x = SPEED
+                self.vel.x = self.speed
                 self.vel.y = 0
+                self.last_pause = counter
             elif (
                 event.key == pygame.K_z or event.key == pygame.K_w
             ) and self.vel.y == 0:
                 self.vel.x = 0
-                self.vel.y = -SPEED
+                self.vel.y = -self.speed
+                self.last_pause = counter
             elif event.key == pygame.K_s and self.vel.y == 0:
                 self.vel.x = 0
-                self.vel.y = SPEED
+                self.vel.y = self.speed
+                self.last_pause = counter
 
             # cheat until apples are implemented
             elif event.key == pygame.K_SPACE:
@@ -175,11 +195,11 @@ class Snake:
 
     def move(self):
         # counter until block has to move
-        self.counter += 1
-        if self.counter >= SIZE / SPEED:
+        self.block_counter += 1
+        if self.block_counter >= SIZE / self.speed:
             self.block_vel.pop(-1)
             self.block_vel = [Velocity(self.vel.x, self.vel.y)] + self.block_vel
-            self.counter = 0
+            self.block_counter = 0
 
         for i in range(self.length):
             self.blocks[i].x += self.block_vel[i].x
@@ -191,14 +211,24 @@ class Snake:
         self.length += 1
         self.blocks.append(
             Position(
-                self.blocks[-1].x - self.block_vel[-1].x / SPEED * SIZE,
-                self.blocks[-1].y - self.block_vel[-1].y / SPEED * SIZE,
+                self.blocks[-1].x - self.block_vel[-1].x / self.speed * SIZE,
+                self.blocks[-1].y - self.block_vel[-1].y / self.speed * SIZE,
                 SIZE,
                 "rect",
                 self.image,
             )
         )
         self.block_vel.append(Velocity(self.block_vel[-1].x, self.block_vel[-1].y))
+        self.score = LARGE_FONT.render(
+            f"Player {self.keyboard}: {self.length-4}", True, BLACK, GREY
+        )
+        if (self.length - 4) > 0 and (self.length - 4) % 10 == 0:
+            self.speed += 2
+            for velocity in self.block_vel:
+                if velocity.x != 0:
+                    velocity.x = velocity.x / abs(velocity.x) * self.speed
+                if velocity.y != 0:
+                    velocity.y = velocity.y / abs(velocity.y) * self.speed
 
     def intersect(self):
         # We check if the head connects with the body.
@@ -229,28 +259,34 @@ class Snake:
             return False
 
 
-def game_loop(time, counter):
+def redrawWindow():
+    text = LARGE_FONT.render(
+        "Score: " + str(30), True, (255, 255, 255)
+    )  # create our text
+
+    dis.blit(text, (700, 10))  # draw the text to the screen
+
+
+def game_loop(time):
     # time will later be used for score
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return True
-        if event.type == pygame.KEYDOWN and counter > FPS / 5:
-            player1.keys(event)
-            player2.keys(event)
-            counter = 0
+        if event.type == pygame.KEYDOWN:
+            player1.keys(event, time)
+            player2.keys(event, time)
     player1.move()
     player2.move()
 
-    counter += 1
-
     dis.fill(WHITE)
+    pygame.draw.rect(dis, GREY, [490, 0, 110, 70])
     apple.draw()
     player1.draw()
     player2.draw()
     apple.collide(player1)
     apple.collide(player2)
     pygame.display.update()
-    return False, counter
+    return False
 
 
 game_over = False
@@ -258,9 +294,8 @@ player1 = Snake(40, 40, 1, IMAGE1)
 player2 = Snake(40, DIS_HEIGHT - 150, 2, IMAGE2)
 apple = Apple()
 time = 0
-count = 0
 while not game_over:
-    game_over, count = game_loop(time, count)
+    game_over = game_loop(time)
     time += 1
     if not (player1.intersect() and player2.intersect()):
         pygame.quit()
@@ -271,6 +306,7 @@ while not game_over:
     elif player2.intersection(player1):
         pygame.quit()
         quit()
+
 
 pygame.quit()
 quit()
