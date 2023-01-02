@@ -258,6 +258,32 @@ class Snake:
         else:
             return False
 
+def Scoreboard(snake1, snake2):
+    font = pygame.font.Font(None, 36)
+    score1 = snake1.length
+    score2 = snake2.length
+    scores = [
+        {"name": "Player 1", "score": snake1.length},
+        {"name": "Player 2", "score": snake2.length},
+    ]
+    dis.fill(BLACK)
+    text = font.render("Scoreboard", True, WHITE)
+    text_rect = text.get_rect()
+    text_rect.centerx = DIS_WIDTH // 2
+    text_rect.y = 10
+    dis.blit(text, text_rect)
+    # Draw the scores
+    y = 50
+    for score in scores:
+        text = font.render(f"{score['name']}: {score['score']}", True, WHITE)
+        text_rect = text.get_rect()
+        text_rect.centerx = DIS_WIDTH // 2
+        text_rect.y = y
+        dis.blit(text, text_rect)
+        y += 50
+    pygame.display.update()
+
+
 
 def redrawWindow():
     text = LARGE_FONT.render(
@@ -298,15 +324,14 @@ while not game_over:
     game_over = game_loop(time)
     time += 1
     if not (player1.intersect() and player2.intersect()):
-        pygame.quit()
-        quit()
+        break
     elif player1.intersection(player2):
-        pygame.quit()
-        quit()
+        break
     elif player2.intersection(player1):
-        pygame.quit()
-        quit()
-
+        break
+while not game_over:
+    Scoreboard(player1, player2)
+    pygame.time.delay(1000)
 
 pygame.quit()
 quit()
