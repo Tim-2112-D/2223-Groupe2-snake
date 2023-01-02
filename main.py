@@ -204,6 +204,18 @@ class Snake:
             c += 1
         return c == 0
 
+    def intersection(self, other_snake):
+        c = 0
+        for i in range(1, other_snake.length):
+            if (
+                other_snake.blocks[i].x - SIZE < self.blocks[0].x < other_snake.blocks[i].x + SIZE
+                and other_snake.blocks[i].y - SIZE < self.blocks[0].y < other_snake.blocks[i].y + SIZE
+            ):
+                c += 1
+        return c == 0
+
+
+
 
 
 
@@ -243,10 +255,10 @@ while not game_over:
     if not (player1.intersect() and player2.intersect()):
         pygame.quit()
         quit()
-    elif player1.intersection(player2):
+    elif not player1.intersection(player2):
         pygame.quit()
         quit()
-    elif player2.intersection(player1):
+    elif not player2.intersection(player1):
         pygame.quit()
         quit()
 
