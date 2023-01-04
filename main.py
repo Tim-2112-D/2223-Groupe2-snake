@@ -3,6 +3,7 @@ import random
 
 pygame.init()
 
+BLINK_EVENT = pygame.USEREVENT + 0
 DIS_WIDTH = 600
 DIS_HEIGHT = 600
 GREEN = "#32CD32"
@@ -95,13 +96,14 @@ class Apple:
 
 
 class Snake:
-    def __init__(self, x_pos, y_pos, keyboard, image):
+    def __init__(self, x_pos, y_pos, keyboard, name, image):
         self.last_pause = 0
         self.block_counter = 0
         self.length = 4
         # This variable will help us attribute the good keys
         # (1 for player one, 2 for player 2)
         self.keyboard = keyboard
+        self.name = name
         self.image = image
         self.blocks = [
             Position(x_pos - i * SIZE, y_pos, SIZE, "rect", self.image)
@@ -122,7 +124,7 @@ class Snake:
         self.blocks[0].paint_head()
 
         score_text = LARGE_FONT.render(
-            f"Player {self.keyboard}: {self.score}", True, BLACK, GREY
+            f"Player {self.name}: {self.score}", True, BLACK, GREY
         )
         dis.blit(score_text, (500, -15 + 25 * self.keyboard))
 
@@ -252,9 +254,11 @@ class Snake:
 
 
 class Scoreboard:
-    def __init__(self, score1, score2, winner):
+    def __init__(self, score1, name1, score2, name2, winner):
         self._score1 = score1
+        self._name1 = name1
         self._score2 = score2
+        self._name2 = name2
         self._winner = winner
 
     def render(self):
@@ -265,17 +269,29 @@ class Scoreboard:
         dis.blit(text_scoreboard, text_scoreboard_rect)
 
         text_score_one = LARGE_FONT.render(
-            f"Player {self._winner} wins!!!", True, WHITE
+            f"Player {[self._name1, self._name2][int(self._winner)-1]} wins!!!",
+            True,
+            WHITE,
         )
         text_score_one_rect = text_score_one.get_rect(center=(DIS_WIDTH / 2, 90))
         dis.blit(text_score_one, text_score_one_rect)
 
-        text_score_one = LARGE_FONT.render(f"Player 1: {self._score1}", True, WHITE)
+        text_score_one = LARGE_FONT.render(
+            f"{self._name1}: {self._score1}", True, WHITE
+        )
         text_score_one_rect = text_score_one.get_rect(center=(DIS_WIDTH / 2, 120))
         dis.blit(text_score_one, text_score_one_rect)
 
-        text_score_two = LARGE_FONT.render(f"Player 2: {self._score2}", True, WHITE)
+        text_score_two = LARGE_FONT.render(
+            f"{self._name2}: {self._score2}", True, WHITE
+        )
         text_score_two_rect = text_score_two.get_rect(center=(DIS_WIDTH / 2, 150))
+        dis.blit(text_score_two, text_score_two_rect)
+
+        text_score_two = LARGE_FONT.render(
+            "Press SPACE to start a new game", True, WHITE
+        )
+        text_score_two_rect = text_score_two.get_rect(center=(DIS_WIDTH / 2, 250))
         dis.blit(text_score_two, text_score_two_rect)
 
     def set_score(self, score1, score2, winner):
@@ -331,11 +347,13 @@ def initialize():
     global quit_game, gameover, player1, player2, apple, time, score
     quit_game = False
     gameover = False
-    player1 = Snake(40, 40, 1, IMAGE1)
-    player2 = Snake(40, DIS_HEIGHT - 150, 2, IMAGE2)
+    player1 = Snake(40, 100, 1, input("Enter the name of the first player: "), IMAGE1)
+    player2 = Snake(
+        40, DIS_HEIGHT - 120, 2, input("Enter the name of the second player: "), IMAGE2
+    )
     apple = Apple()
     time = 0
-    score = Scoreboard(player1.score, player2.score, 1)
+    score = Scoreboard(player1.score, player1.name, player2.score, player2.name, 1)
 
 
 initialize()
