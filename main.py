@@ -21,10 +21,10 @@ pygame.display.set_caption("Snake")
 programIcon = pygame.image.load("icon.png")
 pygame.display.set_icon(programIcon)
 
-IMAGE1 = pygame.image.load("Charles_face.png").convert_alpha()  # or .convert_alpha()
+IMAGE1 = pygame.image.load("Charles_face.png").convert_alpha()
 IMAGE1 = pygame.transform.scale(IMAGE1, (SIZE, SIZE))
 
-IMAGE2 = pygame.image.load("TIM_snake_face.png").convert_alpha()  # or .convert_alpha()
+IMAGE2 = pygame.image.load("TIM_snake_face.png").convert_alpha()
 IMAGE2 = pygame.transform.scale(IMAGE2, (SIZE, SIZE))
 
 clock = pygame.time.Clock()
