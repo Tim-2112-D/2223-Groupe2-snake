@@ -110,9 +110,7 @@ class Snake:
         self.speed = 2
         self.vel = Velocity(self.speed, 0)
         self.block_vel = [Velocity(self.speed, 0) for _ in range(self.length)]
-        self.score = LARGE_FONT.render(
-            f"Player {self.keyboard}: {self.length-4}", True, BLACK, GREY
-        )
+        self.score = self.length - 4
 
     def draw(self):
         corners = self.find_corner()
@@ -123,7 +121,10 @@ class Snake:
             self.blocks[i].draw(GREEN)
         self.blocks[0].paint_head()
 
-        dis.blit(self.score, (500, -15 + 25 * self.keyboard))
+        score_text = LARGE_FONT.render(
+            f"Player {self.keyboard}: {self.score}", True, BLACK, GREY
+        )
+        dis.blit(score_text, (500, -15 + 25 * self.keyboard))
 
     def find_corner(self):
         corner_pos = set(())
@@ -219,9 +220,7 @@ class Snake:
             )
         )
         self.block_vel.append(Velocity(self.block_vel[-1].x, self.block_vel[-1].y))
-        self.score = LARGE_FONT.render(
-            f"Player {self.keyboard}: {self.length-4}", True, BLACK, GREY
-        )
+        self.score = self.length - 4
         if (self.length - 4) > 0 and (self.length - 4) % 10 == 0:
             self.speed += 2
             for velocity in self.block_vel:
@@ -239,15 +238,15 @@ class Snake:
                 self.blocks[i].x - SIZE < self.blocks[0].x < self.blocks[i].x + SIZE
                 and self.blocks[i].y - SIZE < self.blocks[0].y < self.blocks[i].y + SIZE
             ):
-                return False
+                return True
         if (
             self.blocks[0].x > DIS_WIDTH - SIZE
             or self.blocks[0].x < -2
             or self.blocks[0].y > DIS_HEIGHT - SIZE
             or self.blocks[0].y < 0
         ):
-            return False
-        return True
+            return True
+        return False
 
     def intersection(self, snake):
         for block1 in snake.blocks:
@@ -258,31 +257,39 @@ class Snake:
         else:
             return False
 
-def Scoreboard(snake1, snake2):
-    font = pygame.font.Font(None, 36)
-    score1 = snake1.length
-    score2 = snake2.length
-    scores = [
-        {"name": "Player 1", "score": snake1.length},
-        {"name": "Player 2", "score": snake2.length},
-    ]
-    dis.fill(BLACK)
-    text = font.render("Scoreboard", True, WHITE)
-    text_rect = text.get_rect()
-    text_rect.centerx = DIS_WIDTH // 2
-    text_rect.y = 10
-    dis.blit(text, text_rect)
-    # Draw the scores
-    y = 50
-    for score in scores:
-        text = font.render(f"{score['name']}: {score['score']}", True, WHITE)
-        text_rect = text.get_rect()
-        text_rect.centerx = DIS_WIDTH // 2
-        text_rect.y = y
-        dis.blit(text, text_rect)
-        y += 50
-    pygame.display.update()
 
+class Scoreboard:
+    def __init__(self, score1, score2, winner):
+        self._score1 = score1
+        self._score2 = score2
+        self._winner = winner
+
+    def render(self):
+        dis.fill(BLACK)
+
+        text_scoreboard = LARGE_FONT.render("Scoreboard", True, WHITE)
+        text_scoreboard_rect = text_scoreboard.get_rect(center=(DIS_WIDTH / 2, 60))
+        dis.blit(text_scoreboard, text_scoreboard_rect)
+
+        text_score_one = LARGE_FONT.render(
+            f"Player {self._winner} wins!!!", True, WHITE
+        )
+        text_score_one_rect = text_score_one.get_rect(center=(DIS_WIDTH / 2, 90))
+        dis.blit(text_score_one, text_score_one_rect)
+
+        text_score_one = LARGE_FONT.render(f"Player 1: {self._score1}", True, WHITE)
+        text_score_one_rect = text_score_one.get_rect(center=(DIS_WIDTH / 2, 120))
+        dis.blit(text_score_one, text_score_one_rect)
+
+        text_score_two = LARGE_FONT.render(f"Player 2: {self._score2}", True, WHITE)
+        text_score_two_rect = text_score_two.get_rect(center=(DIS_WIDTH / 2, 150))
+        dis.blit(text_score_two, text_score_two_rect)
+
+    def set_score(self, score1, score2, winner):
+        self._score1 = score1
+        self._score2 = score2
+        self._winner = winner
+        self.render()
 
 
 def redrawWindow():
@@ -293,45 +300,50 @@ def redrawWindow():
     dis.blit(text, (700, 10))  # draw the text to the screen
 
 
-def game_loop(time):
-    # time will later be used for score
+def game_loop(time, gameover, score):
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return True
         if event.type == pygame.KEYDOWN:
             player1.keys(event, time)
             player2.keys(event, time)
-    player1.move()
-    player2.move()
 
-    dis.fill(WHITE)
-    pygame.draw.rect(dis, GREY, [490, 0, 110, 70])
-    apple.draw()
-    player1.draw()
-    player2.draw()
-    apple.collide(player1)
-    apple.collide(player2)
+    if not gameover:
+        player1.move()
+        player2.move()
+
+        dis.fill(WHITE)
+        pygame.draw.rect(dis, GREY, [490, 0, 110, 70])
+        apple.draw()
+        player1.draw()
+        player2.draw()
+        apple.collide(player1)
+        apple.collide(player2)
+
+        if player1.intersect() or player1.intersection(player2):
+            gameover = True
+            score.set_score(player1.score, player2.score, 2)
+        elif player2.intersect() or player2.intersection(player1):
+            gameover = True
+            score.set_score(player1.score, player2.score, 1)
+
     pygame.display.update()
-    return False
+
+    return False, gameover
 
 
-game_over = False
+quit_game = False
+gameover = False
 player1 = Snake(40, 40, 1, IMAGE1)
 player2 = Snake(40, DIS_HEIGHT - 150, 2, IMAGE2)
 apple = Apple()
 time = 0
-while not game_over:
-    game_over = game_loop(time)
+score = Scoreboard(player1.score, player2.score, 1)
+
+while not quit_game:
+    quit_game, gameover = game_loop(time, gameover, score)
     time += 1
-    if not (player1.intersect() and player2.intersect()):
-        break
-    elif player1.intersection(player2):
-        break
-    elif player2.intersection(player1):
-        break
-while not game_over:
-    Scoreboard(player1, player2)
-    pygame.time.delay(1000)
 
 pygame.quit()
 quit()
