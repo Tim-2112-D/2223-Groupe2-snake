@@ -1,3 +1,4 @@
 [flake8]
 max-line-length = 88
-ignore = E1, E2, E3, W5 # may conflict with black
+# may conflict with black
+ignore = E1, E2, E3, W5 

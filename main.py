@@ -167,9 +167,6 @@ class Snake:
                 self.vel.y = self.speed
                 self.last_pause = counter
 
-            # cheat until apples are implemented
-            elif event.key == pygame.K_SPACE:
-                self.grow()
         elif self.keyboard == 2:
             if (event.key == pygame.K_q or event.key == pygame.K_a) and self.vel.x == 0:
                 self.vel.x = -self.speed
@@ -189,10 +186,6 @@ class Snake:
                 self.vel.x = 0
                 self.vel.y = self.speed
                 self.last_pause = counter
-
-            # cheat until apples are implemented
-            elif event.key == pygame.K_SPACE:
-                self.grow()
 
     def move(self):
         # counter until block has to move
@@ -292,15 +285,29 @@ class Scoreboard:
         self.render()
 
 
-def redrawWindow():
-    text = LARGE_FONT.render(
-        "Score: " + str(30), True, (255, 255, 255)
-    )  # create our text
+def play(score):
+    player1.move()
+    player2.move()
 
-    dis.blit(text, (700, 10))  # draw the text to the screen
+    dis.fill(WHITE)
+    pygame.draw.rect(dis, GREY, [490, 0, 110, 70])
+    apple.draw()
+    player1.draw()
+    player2.draw()
+    apple.collide(player1)
+    apple.collide(player2)
+
+    if player1.intersect() or player1.intersection(player2):
+        score.set_score(player1.score, player2.score, 2)
+        return True
+    elif player2.intersect() or player2.intersection(player1):
+        score.set_score(player1.score, player2.score, 1)
+        return True
+    return False
 
 
-def game_loop(time, gameover, score):
+def game_loop():
+    global gameover, player1, player2, apple, time, score
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -309,40 +316,32 @@ def game_loop(time, gameover, score):
             player1.keys(event, time)
             player2.keys(event, time)
 
+            if event.key == pygame.K_SPACE and gameover:
+                initialize()
+
     if not gameover:
-        player1.move()
-        player2.move()
-
-        dis.fill(WHITE)
-        pygame.draw.rect(dis, GREY, [490, 0, 110, 70])
-        apple.draw()
-        player1.draw()
-        player2.draw()
-        apple.collide(player1)
-        apple.collide(player2)
-
-        if player1.intersect() or player1.intersection(player2):
-            gameover = True
-            score.set_score(player1.score, player2.score, 2)
-        elif player2.intersect() or player2.intersection(player1):
-            gameover = True
-            score.set_score(player1.score, player2.score, 1)
+        gameover = play(score)
 
     pygame.display.update()
 
-    return False, gameover
+    return False
 
 
-quit_game = False
-gameover = False
-player1 = Snake(40, 40, 1, IMAGE1)
-player2 = Snake(40, DIS_HEIGHT - 150, 2, IMAGE2)
-apple = Apple()
-time = 0
-score = Scoreboard(player1.score, player2.score, 1)
+def initialize():
+    global quit_game, gameover, player1, player2, apple, time, score
+    quit_game = False
+    gameover = False
+    player1 = Snake(40, 40, 1, IMAGE1)
+    player2 = Snake(40, DIS_HEIGHT - 150, 2, IMAGE2)
+    apple = Apple()
+    time = 0
+    score = Scoreboard(player1.score, player2.score, 1)
+
+
+initialize()
 
 while not quit_game:
-    quit_game, gameover = game_loop(time, gameover, score)
+    quit_game = game_loop()
     time += 1
 
 pygame.quit()
