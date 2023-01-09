@@ -396,11 +396,11 @@ def play(score):
     score_text_one, score_rect_one = player1.draw()
     score_text_two, score_rect_two = player2.draw()
     s = pygame.Surface(
-        (DIS_WIDTH - score_rect_two.left + 10, 60)
+        (DIS_WIDTH - min(score_rect_one.left, score_rect_two.left) + 10, 60)
     )  # the size of your rect
     s.set_alpha(128)  # alpha level
     s.fill(GREY)  # this fills the entire surface
-    dis.blit(s, (score_rect_two.left - 10, 0))
+    dis.blit(s, (min(score_rect_one.left, score_rect_two.left) - 10, 0))
     dis.blit(score_text_one, (score_rect_one.left, score_rect_one.top))
     dis.blit(score_text_two, (score_rect_two.left, score_rect_two.top))
     apple.collide(player1)
