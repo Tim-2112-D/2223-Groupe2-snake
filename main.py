@@ -15,6 +15,10 @@ LARGE_FONT = pygame.font.SysFont("arial", 20)
 SIZE = 20
 FPS = 30
 
+COLOR_INACTIVE = pygame.Color("lightskyblue3")
+COLOR_ACTIVE = pygame.Color("dodgerblue2")
+FONT = pygame.font.Font(None, 32)
+
 
 dis = pygame.display.set_mode((DIS_WIDTH, DIS_HEIGHT))
 pygame.display.set_caption("Snake")
@@ -123,11 +127,9 @@ class Snake:
             self.blocks[i].draw(GREEN)
         self.blocks[0].paint_head()
 
-        score_text = LARGE_FONT.render(
-            f"Player {self.name}: {self.score}", True, BLACK
-        )
+        score_text = LARGE_FONT.render(f"Player {self.name}: {self.score}", True, BLACK)
         score_rect = score_text.get_rect(center=(0, -10 + 25 * self.keyboard))
-        score_rect.right = DIS_WIDTH-10
+        score_rect.right = DIS_WIDTH - 10
 
         return score_text, score_rect
 
@@ -304,6 +306,87 @@ class Scoreboard:
         self.render()
 
 
+class InputBox:
+    def __init__(self, x, y, w, h, text=""):
+        self.rect = pygame.Rect(x, y, w, h)
+        self.color = COLOR_INACTIVE
+        self.text = text
+        self.txt_surface = FONT.render(text, True, self.color)
+        self.active = False
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            # If the user clicked on the input_box rect.
+            if self.rect.collidepoint(event.pos):
+                # Toggle the active variable.
+                self.active = not self.active
+            else:
+                self.active = False
+            # Change the current color of the input box.
+            self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
+        if event.type == pygame.KEYDOWN:
+            if self.active:
+                if event.key == pygame.K_RETURN:
+                    print(self.text)
+                    self.text = ""
+                elif event.key == pygame.K_BACKSPACE:
+                    self.text = self.text[:-1]
+                else:
+                    self.text += event.unicode
+                # Re-render the text.
+                self.txt_surface = FONT.render(self.text, True, self.color)
+
+    def update(self):
+        # Resize the box if the text is too long.
+        width = max(200, self.txt_surface.get_width() + 10)
+        self.rect.w = width
+
+    def draw(self, screen):
+        # Blit the text.
+        screen.blit(self.txt_surface, (self.rect.x + 5, self.rect.y + 5))
+        # Blit the rect.
+        pygame.draw.rect(screen, self.color, self.rect, 2)
+
+
+class Startscreen:
+    def __init__(self):
+        self.text_snake = LARGE_FONT.render("SNAKE", True, WHITE)
+        self.text_snake_rect = self.text_snake.get_rect(center=(DIS_WIDTH / 2, 60))
+        self.text_author = LARGE_FONT.render(
+            "by Charles Dezons and Tim Daffner", True, WHITE
+        )
+        self.text_author_rect = self.text_author.get_rect(center=(DIS_WIDTH / 2, 80))
+        self.text_player_one = LARGE_FONT.render(
+            "Please enter Name of Player 1:", True, WHITE
+        )
+        self.text_player_one_rect = self.text_player_one.get_rect(
+            center=(DIS_WIDTH / 2, 140)
+        )
+        self.input_one = InputBox(DIS_WIDTH / 2 - 100, 160, 140, 32)
+        self.text_player_two = LARGE_FONT.render(
+            "Please enter Name of Player 2:", True, WHITE
+        )
+        self.text_player_two_rect = self.text_player_two.get_rect(
+            center=(DIS_WIDTH / 2, 220)
+        )
+        self.input_two = InputBox(DIS_WIDTH / 2 - 100, 240, 140, 32)
+
+        self.text_enter = LARGE_FONT.render("Press ENTER when ready", True, WHITE)
+        self.text_enter_rect = self.text_enter.get_rect(center=(DIS_WIDTH / 2, 400))
+
+    def render(self):
+        dis.fill(BLACK)
+        dis.blit(self.text_snake, self.text_snake_rect)
+        dis.blit(self.text_author, self.text_author_rect)
+        dis.blit(self.text_player_one, self.text_player_one_rect)
+        self.input_one.draw(dis)
+        self.input_one.update()
+        dis.blit(self.text_player_two, self.text_player_two_rect)
+        self.input_two.draw(dis)
+        self.input_two.update()
+        dis.blit(self.text_enter, self.text_enter_rect)
+
+
 def play(score):
     player1.move()
     player2.move()
@@ -312,10 +395,12 @@ def play(score):
     apple.draw()
     score_text_one, score_rect_one = player1.draw()
     score_text_two, score_rect_two = player2.draw()
-    s = pygame.Surface((DIS_WIDTH-score_rect_two.left+10, 60))  # the size of your rect
-    s.set_alpha(128)                # alpha level
-    s.fill(GREY)           # this fills the entire surface
-    dis.blit(s, (score_rect_two.left-10, 0))
+    s = pygame.Surface(
+        (DIS_WIDTH - score_rect_two.left + 10, 60)
+    )  # the size of your rect
+    s.set_alpha(128)  # alpha level
+    s.fill(GREY)  # this fills the entire surface
+    dis.blit(s, (score_rect_two.left - 10, 0))
     dis.blit(score_text_one, (score_rect_one.left, score_rect_one.top))
     dis.blit(score_text_two, (score_rect_two.left, score_rect_two.top))
     apple.collide(player1)
@@ -331,7 +416,7 @@ def play(score):
 
 
 def game_loop():
-    global gameover, player1, player2, apple, time, score
+    global start, game_play, gameover, player1, player2, apple, time, score
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -341,9 +426,19 @@ def game_loop():
             player2.keys(event, time)
 
             if event.key == pygame.K_SPACE and gameover:
-                initialize()
+                initialize(start.input_one.text, start.input_two.text)
 
-    if not gameover:
+            if event.key == pygame.K_RETURN and not game_play:
+                game_play = True
+                initialize(start.input_one.text, start.input_two.text)
+        if not game_play:
+            start.input_one.handle_event(event)
+            start.input_two.handle_event(event)
+
+    if not gameover and not game_play:
+        start.render()
+
+    if not gameover and game_play:
         gameover = play(score)
 
     pygame.display.update()
@@ -351,19 +446,19 @@ def game_loop():
     return False
 
 
-def initialize():
+def initialize(name_one="1", name_two="2"):
     global quit_game, gameover, player1, player2, apple, time, score
     quit_game = False
     gameover = False
-    player1 = Snake(40, 100, 1, input("Enter the name of the first player: "), IMAGE1)
-    player2 = Snake(
-        40, DIS_HEIGHT - 120, 2, input("Enter the name of the second player: "), IMAGE2
-    )
+    player1 = Snake(40, 100, 1, name_one, IMAGE1)
+    player2 = Snake(40, DIS_HEIGHT - 120, 2, name_two, IMAGE2)
     apple = Apple()
     time = 0
     score = Scoreboard(player1.score, player1.name, player2.score, player2.name, 1)
 
 
+start = Startscreen()
+game_play = False
 initialize()
 
 while not quit_game:
