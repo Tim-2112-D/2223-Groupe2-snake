@@ -1,6 +1,7 @@
 import random
 import pygame
-import constants
+
+import py_files.constants as const
 
 
 class Velocity:
@@ -18,33 +19,37 @@ class Position:
         self.object = None
         self.image = image
 
-    def draw(self, dis, color):
+    def draw(self, color):
         if self.form == "rect":
             self.object = pygame.draw.rect(
-                dis, color, [self.x, self.y, self.width, self.width]
+                const.DISPLAY, color, [self.x, self.y, self.width, self.width]
             )
         elif self.form == "circle":
-            self.object = pygame.draw.circle(dis, color, [self.x, self.y], self.width)
+            self.object = pygame.draw.circle(const.DISPLAY, color, [self.x, self.y], self.width)
 
-    def paint_head(self, dis):
-        dis.blit(self.image, self.object)
+    def paint_head(self):
+        const.DISPLAY.blit(self.image, self.object)
 
 
 class Apple:
     def __init__(self):
         self.circle = Position(
-            random.randint(constants.SIZE, constants.DIS_WIDTH - constants.SIZE),
-            random.randint(constants.SIZE, constants.DIS_WIDTH - constants.SIZE),
-            constants.SIZE / 2,
+            random.randint(const.SIZE, const.DIS_WIDTH - const.SIZE),
+            random.randint(const.SIZE, const.DIS_WIDTH - const.SIZE),
+            const.SIZE / 2,
             "circle",
         )
 
-    def draw(self, dis):
-        self.circle.draw(dis, constants.COLORS["RED"])
+    def draw(self):
+        self.circle.draw(const.COLORS["RED"])
 
     def move(self):
-        self.circle.x = random.randint(constants.SIZE, constants.DIS_WIDTH - constants.SIZE)
-        self.circle.y = random.randint(constants.SIZE, constants.DIS_WIDTH - constants.SIZE)
+        self.circle.x = random.randint(
+            const.SIZE, const.DIS_WIDTH - const.SIZE
+        )
+        self.circle.y = random.randint(
+            const.SIZE, const.DIS_WIDTH - const.SIZE
+        )
 
     def collide(self, player):
         x_dist = min(
@@ -78,7 +83,9 @@ class Snake:
         self.name = name
         self.image = image
         self.blocks = [
-            Position(x_pos - i * constants.SIZE, y_pos, constants.SIZE, "rect", self.image)
+            Position(
+                x_pos - i * const.SIZE, y_pos, const.SIZE, "rect", self.image
+            )
             for i in range(self.length)
         ]
         self.speed = 2
@@ -86,18 +93,24 @@ class Snake:
         self.block_vel = [Velocity(self.speed, 0) for _ in range(self.length)]
         self.score = self.length - 4
 
-    def draw(self, dis):
+    def draw(self):
         corners = self.find_corner()
         for corner in corners:
-            pygame.draw.rect(dis, constants.COLORS["GREEN"], [corner[0], corner[1], constants.SIZE, constants.SIZE])
-        self.blocks[0].draw(dis, constants.COLORS["GREEN"])
+            pygame.draw.rect(
+                const.DISPLAY,
+                const.COLORS["GREEN"],
+                [corner[0], corner[1], const.SIZE, const.SIZE],
+            )
+        self.blocks[0].draw(const.COLORS["GREEN"])
         for i in range(1, len(self.blocks)):
-            self.blocks[i].draw(dis, constants.COLORS["GREEN"])
-        self.blocks[0].paint_head(dis)
+            self.blocks[i].draw(const.COLORS["GREEN"])
+        self.blocks[0].paint_head()
 
-        score_text = constants.FONT.render(f"Player {self.name}: {self.score}", True, constants.COLORS["BLACK"])
+        score_text = const.FONTS["NORMAL"].render(
+            f"Player {self.name}: {self.score}", True, const.COLORS["BLACK"]
+        )
         score_rect = score_text.get_rect(center=(0, -10 + 25 * self.keyboard))
-        score_rect.right = constants.DIS_WIDTH - 10
+        score_rect.right = const.DIS_WIDTH - 10
 
         return score_text, score_rect
 
@@ -122,7 +135,7 @@ class Snake:
 
     # Gives the good key depending on the snake (int keyboard)
     def keys(self, event, counter):
-        if counter - self.last_pause <= constants.FPS / 5:
+        if counter - self.last_pause <= const.FPS / 5:
             pass
         elif self.keyboard == 1:
             if event.key == pygame.K_LEFT and self.vel.x == 0:
@@ -165,7 +178,7 @@ class Snake:
     def move(self):
         # counter until block has to move
         self.block_counter += 1
-        if self.block_counter >= constants.SIZE / self.speed:
+        if self.block_counter >= const.SIZE / self.speed:
             self.block_vel.pop(-1)
             self.block_vel = [Velocity(self.vel.x, self.vel.y)] + self.block_vel
             self.block_counter = 0
@@ -174,15 +187,15 @@ class Snake:
             self.blocks[i].x += self.block_vel[i].x
             self.blocks[i].y += self.block_vel[i].y
 
-        constants.CLOCK.tick(constants.FPS)
+        const.CLOCK.tick(const.FPS)
 
     def grow(self):
         self.length += 1
         self.blocks.append(
             Position(
-                self.blocks[-1].x - self.block_vel[-1].x / self.speed * constants.SIZE,
-                self.blocks[-1].y - self.block_vel[-1].y / self.speed * constants.SIZE,
-                constants.SIZE,
+                self.blocks[-1].x - self.block_vel[-1].x / self.speed * const.SIZE,
+                self.blocks[-1].y - self.block_vel[-1].y / self.speed * const.SIZE,
+                const.SIZE,
                 "rect",
                 self.image,
             )
@@ -203,14 +216,18 @@ class Snake:
         # the second and third block touch the first one
         for i in range(3, self.length):
             if (
-                self.blocks[i].x - constants.SIZE < self.blocks[0].x < self.blocks[i].x + constants.SIZE
-                and self.blocks[i].y - constants.SIZE < self.blocks[0].y < self.blocks[i].y + constants.SIZE
+                self.blocks[i].x - const.SIZE
+                < self.blocks[0].x
+                < self.blocks[i].x + const.SIZE
+                and self.blocks[i].y - const.SIZE
+                < self.blocks[0].y
+                < self.blocks[i].y + const.SIZE
             ):
                 return True
         if (
-            self.blocks[0].x > constants.DIS_WIDTH - constants.SIZE
+            self.blocks[0].x > const.DIS_WIDTH - const.SIZE
             or self.blocks[0].x < -2
-            or self.blocks[0].y > constants.DIS_HEIGHT - constants.SIZE
+            or self.blocks[0].y > const.DIS_HEIGHT - const.SIZE
             or self.blocks[0].y < 0
         ):
             return True
@@ -220,7 +237,7 @@ class Snake:
         for block1 in snake.blocks:
             dist_x = abs(block1.x - self.blocks[0].x)
             dist_y = abs(block1.y - self.blocks[0].y)
-            if dist_x + dist_y <= constants.SIZE:
+            if dist_x + dist_y <= const.SIZE:
                 return True
         else:
             return False

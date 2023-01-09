@@ -1,13 +1,14 @@
 import pygame
 
-import constants
+import py_files.constants as const
+
 
 class InputBox:
     def __init__(self, x, y, w, h, text=""):
         self.rect = pygame.Rect(x, y, w, h)
-        self.color = constants.COLORS["INACTIVE"]
+        self.color = const.COLORS["INACTIVE"]
         self.text = text
-        self.txt_surface = constants.FONT.render(text, True, self.color)
+        self.txt_surface = const.FONTS["LARGE"].render(text, True, self.color)
         self.active = False
 
     def handle_event(self, event):
@@ -19,7 +20,11 @@ class InputBox:
             else:
                 self.active = False
             # Change the current color of the input box.
-            self.color = constants.COLORS["ACTIVE"] if self.active else constants.COLORS["INACTIVE"]
+            self.color = (
+                const.COLORS["ACTIVE"]
+                if self.active
+                else const.COLORS["INACTIVE"]
+            )
         if event.type == pygame.KEYDOWN:
             if self.active:
                 if event.key == pygame.K_RETURN:
@@ -30,7 +35,7 @@ class InputBox:
                 else:
                     self.text += event.unicode
                 # Re-render the text.
-                self.txt_surface = constants.FONT.render(self.text, True, self.color)
+                self.txt_surface = const.FONTS["LARGE"].render(self.text, True, self.color)
 
     def update(self):
         width = max(200, self.txt_surface.get_width() + 10)
@@ -38,6 +43,6 @@ class InputBox:
 
     def draw(self, screen):
         # Blit the text.
-        screen.blit(self.txt_surface, (self.rect.x + 5, self.rect.y + 5))
+        screen.blit(self.txt_surface, (self.rect.x + 5, self.rect.y))
         # Blit the rect.
         pygame.draw.rect(screen, self.color, self.rect, 2)
