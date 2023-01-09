@@ -124,9 +124,12 @@ class Snake:
         self.blocks[0].paint_head()
 
         score_text = LARGE_FONT.render(
-            f"Player {self.name}: {self.score}", True, BLACK, GREY
+            f"Player {self.name}: {self.score}", True, BLACK
         )
-        dis.blit(score_text, (500, -15 + 25 * self.keyboard))
+        score_rect = score_text.get_rect(center=(0, -10 + 25 * self.keyboard))
+        score_rect.right = DIS_WIDTH-10
+
+        return score_text, score_rect
 
     def find_corner(self):
         corner_pos = set(())
@@ -306,10 +309,15 @@ def play(score):
     player2.move()
 
     dis.fill(WHITE)
-    pygame.draw.rect(dis, GREY, [490, 0, 110, 70])
     apple.draw()
-    player1.draw()
-    player2.draw()
+    score_text_one, score_rect_one = player1.draw()
+    score_text_two, score_rect_two = player2.draw()
+    s = pygame.Surface((DIS_WIDTH-score_rect_two.left+10, 60))  # the size of your rect
+    s.set_alpha(128)                # alpha level
+    s.fill(GREY)           # this fills the entire surface
+    dis.blit(s, (score_rect_two.left-10, 0))
+    dis.blit(score_text_one, (score_rect_one.left, score_rect_one.top))
+    dis.blit(score_text_two, (score_rect_two.left, score_rect_two.top))
     apple.collide(player1)
     apple.collide(player2)
 
