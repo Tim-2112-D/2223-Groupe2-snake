@@ -130,7 +130,7 @@ class Snake:
         return corner_pos
 
     # Gives the good key depending on the snake (int keyboard)
-    def keys(self, event, counter):
+    def keys(self, event, counter, apple):
         if counter - self.last_pause <= const.FPS / 5:
             pass
         elif self.keyboard == 1:
@@ -237,3 +237,31 @@ class Snake:
                 return True
         else:
             return False
+
+
+class AI(Snake):
+    def keys(self, event, counter, apple):
+        if counter - self.last_pause <= const.FPS:
+            pass
+        else:
+            dist = [
+                self.blocks[0].x + self.blocks[0].width / 2 - apple.circle.x,
+                self.blocks[0].y + self.blocks[0].width / 2 - apple.circle.y,
+            ]
+            # signs were the other way around, but actually works better like this, since not as predictable
+            if dist[0] > -apple.circle.width and self.vel.x == 0:
+                self.vel.x = -self.speed
+                self.vel.y = 0
+                self.last_pause = counter
+            elif dist[0] < apple.circle.width and self.vel.x == 0:
+                self.vel.x = self.speed
+                self.vel.y = 0
+                self.last_pause = counter
+            elif dist[1] > -apple.circle.width and self.vel.y == 0:
+                self.vel.x = 0
+                self.vel.y = -self.speed
+                self.last_pause = counter
+            elif dist[1] < apple.circle.width and self.vel.y == 0:
+                self.vel.x = 0
+                self.vel.y = self.speed
+                self.last_pause = counter

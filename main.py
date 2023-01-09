@@ -8,6 +8,8 @@ pygame.init()
 pygame.display.set_caption("Snake")
 pygame.display.set_icon(const.IMAGES["ICON"])
 
+### in order to activate AI name the player AI
+
 
 def game_loop():
     global game_play
@@ -16,8 +18,8 @@ def game_loop():
         if event.type == pygame.QUIT:
             return True
         if event.type == pygame.KEYDOWN:
-            game.player1.keys(event, game.time)
-            game.player2.keys(event, game.time)
+            game.player1.keys(event, game.time, game.apple)
+            game.player2.keys(event, game.time, game.apple)
 
             if event.key == pygame.K_SPACE and game.gameover:
                 game.__init__(start.input_one.text, start.input_two.text)
@@ -34,6 +36,10 @@ def game_loop():
 
     if not game.gameover and game_play:
         game.gameover = game.play()
+        if game.player1.name == "AI":
+            game.player1.keys(None, game.time, game.apple)
+        elif game.player2.name == "AI":
+            game.player2.keys(None, game.time, game.apple)
 
     pygame.display.update()
 

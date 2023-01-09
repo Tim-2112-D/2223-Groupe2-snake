@@ -55,13 +55,21 @@ class Startscreen:
 
 
 class Game:
-    def __init__(self, name_one="1", name_two="2"):
+    def __init__(self, name_one="1", name_two="2", ai=False):
         self.quit_game = False
         self.gameover = False
-        self.player1 = items.Snake(40, 100, 1, name_one, const.IMAGES["CHARLES"])
-        self.player2 = items.Snake(
-            40, const.DIS_HEIGHT - 120, 2, name_two, const.IMAGES["TIM"]
-        )
+        if name_one == "AI":
+            self.player1 = items.AI(40, 100, 1, name_one, const.IMAGES["CHARLES"])
+        else:
+            self.player1 = items.Snake(40, 100, 1, name_one, const.IMAGES["CHARLES"])
+        if name_two == "AI":
+            self.player2 = items.AI(
+                40, const.DIS_HEIGHT - 120, 2, name_two, const.IMAGES["TIM"]
+            )
+        else:
+            self.player2 = items.Snake(
+                40, const.DIS_HEIGHT - 120, 2, name_two, const.IMAGES["TIM"]
+            )
         self.apple = items.Apple()
         self.time = 0
         self.score = Scoreboard(
