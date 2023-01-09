@@ -25,7 +25,9 @@ class Position:
                 const.DISPLAY, color, [self.x, self.y, self.width, self.width]
             )
         elif self.form == "circle":
-            self.object = pygame.draw.circle(const.DISPLAY, color, [self.x, self.y], self.width)
+            self.object = pygame.draw.circle(
+                const.DISPLAY, color, [self.x, self.y], self.width
+            )
 
     def paint_head(self):
         const.DISPLAY.blit(self.image, self.object)
@@ -44,12 +46,8 @@ class Apple:
         self.circle.draw(const.COLORS["RED"])
 
     def move(self):
-        self.circle.x = random.randint(
-            const.SIZE, const.DIS_WIDTH - const.SIZE
-        )
-        self.circle.y = random.randint(
-            const.SIZE, const.DIS_WIDTH - const.SIZE
-        )
+        self.circle.x = random.randint(const.SIZE, const.DIS_WIDTH - const.SIZE)
+        self.circle.y = random.randint(const.SIZE, const.DIS_WIDTH - const.SIZE)
 
     def collide(self, player):
         x_dist = min(
@@ -83,9 +81,7 @@ class Snake:
         self.name = name
         self.image = image
         self.blocks = [
-            Position(
-                x_pos - i * const.SIZE, y_pos, const.SIZE, "rect", self.image
-            )
+            Position(x_pos - i * const.SIZE, y_pos, const.SIZE, "rect", self.image)
             for i in range(self.length)
         ]
         self.speed = 2

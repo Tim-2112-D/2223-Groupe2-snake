@@ -23,15 +23,15 @@ COLORS = {
 pygame.font.init()
 FONTS = {
     "NORMAL": pygame.font.SysFont("arial", 20),
-    "LARGE": pygame.font.SysFont("arial", 26)
+    "LARGE": pygame.font.SysFont("arial", 26),
 }
 
 DISPLAY = pygame.display.set_mode((DIS_WIDTH, DIS_HEIGHT))
-IMAGE1 = pygame.image.load("Charles_face.png").convert_alpha()
-IMAGE2 = pygame.image.load("TIM_snake_face.png").convert_alpha()
+IMAGE1 = pygame.image.load("images\Charles_face.png").convert_alpha()
+IMAGE2 = pygame.image.load("images\TIM_snake_face.png").convert_alpha()
 
 IMAGES = {
-    "ICON": pygame.image.load("icon.png"),
+    "ICON": pygame.image.load("images\icon.png"),
     "CHARLES": pygame.transform.scale(IMAGE1, (SIZE, SIZE)),
     "TIM": pygame.transform.scale(IMAGE2, (SIZE, SIZE)),
 }

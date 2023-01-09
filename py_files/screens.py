@@ -59,11 +59,19 @@ class Game:
         self.quit_game = False
         self.gameover = False
         self.player1 = items.Snake(40, 100, 1, name_one, const.IMAGES["CHARLES"])
-        self.player2 = items.Snake(40, const.DIS_HEIGHT - 120, 2, name_two, const.IMAGES["TIM"])
+        self.player2 = items.Snake(
+            40, const.DIS_HEIGHT - 120, 2, name_two, const.IMAGES["TIM"]
+        )
         self.apple = items.Apple()
         self.time = 0
-        self.score = Scoreboard(self.player1.score, self.player1.name, self.player2.score, self.player2.name, 1)
-    
+        self.score = Scoreboard(
+            self.player1.score,
+            self.player1.name,
+            self.player2.score,
+            self.player2.name,
+            1,
+        )
+
     def play(self):
         self.player1.move()
         self.player2.move()
@@ -116,33 +124,25 @@ class Scoreboard:
             True,
             const.COLORS["WHITE"],
         )
-        text_score_one_rect = text_score_one.get_rect(
-            center=(const.DIS_WIDTH / 2, 90)
-        )
+        text_score_one_rect = text_score_one.get_rect(center=(const.DIS_WIDTH / 2, 90))
         const.DISPLAY.blit(text_score_one, text_score_one_rect)
 
         text_score_one = const.FONTS["NORMAL"].render(
             f"{self._name1}: {self._score1}", True, const.COLORS["WHITE"]
         )
-        text_score_one_rect = text_score_one.get_rect(
-            center=(const.DIS_WIDTH / 2, 120)
-        )
+        text_score_one_rect = text_score_one.get_rect(center=(const.DIS_WIDTH / 2, 120))
         const.DISPLAY.blit(text_score_one, text_score_one_rect)
 
         text_score_two = const.FONTS["NORMAL"].render(
             f"{self._name2}: {self._score2}", True, const.COLORS["WHITE"]
         )
-        text_score_two_rect = text_score_two.get_rect(
-            center=(const.DIS_WIDTH / 2, 150)
-        )
+        text_score_two_rect = text_score_two.get_rect(center=(const.DIS_WIDTH / 2, 150))
         const.DISPLAY.blit(text_score_two, text_score_two_rect)
 
         text_score_two = const.FONTS["NORMAL"].render(
             "Press SPACE to start a new game", True, const.COLORS["WHITE"]
         )
-        text_score_two_rect = text_score_two.get_rect(
-            center=(const.DIS_WIDTH / 2, 250)
-        )
+        text_score_two_rect = text_score_two.get_rect(center=(const.DIS_WIDTH / 2, 250))
         const.DISPLAY.blit(text_score_two, text_score_two_rect)
 
     def set_score(self, score1, score2, winner):

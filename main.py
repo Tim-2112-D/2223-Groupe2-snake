@@ -1,7 +1,6 @@
 import pygame
 
-from py_files.items import Apple, Snake
-from py_files.screens import Scoreboard, Startscreen, Game
+from py_files.screens import Startscreen, Game
 import py_files.constants as const
 
 pygame.init()

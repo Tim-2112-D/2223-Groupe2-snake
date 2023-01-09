@@ -21,9 +21,7 @@ class InputBox:
                 self.active = False
             # Change the current color of the input box.
             self.color = (
-                const.COLORS["ACTIVE"]
-                if self.active
-                else const.COLORS["INACTIVE"]
+                const.COLORS["ACTIVE"] if self.active else const.COLORS["INACTIVE"]
             )
         if event.type == pygame.KEYDOWN:
             if self.active:
@@ -35,7 +33,9 @@ class InputBox:
                 else:
                     self.text += event.unicode
                 # Re-render the text.
-                self.txt_surface = const.FONTS["LARGE"].render(self.text, True, self.color)
+                self.txt_surface = const.FONTS["LARGE"].render(
+                    self.text, True, self.color
+                )
 
     def update(self):
         width = max(200, self.txt_surface.get_width() + 10)
