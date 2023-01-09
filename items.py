@@ -1,16 +1,6 @@
 import random
 import pygame
-
-from colors import *
-
-SIZE = 20
-DIS_WIDTH = 600
-DIS_HEIGHT = 600
-
-FPS = 30
-
-
-CLOCK = pygame.time.Clock()
+import constants
 
 
 class Velocity:
@@ -43,18 +33,18 @@ class Position:
 class Apple:
     def __init__(self):
         self.circle = Position(
-            random.randint(SIZE, DIS_WIDTH - SIZE),
-            random.randint(SIZE, DIS_WIDTH - SIZE),
-            SIZE / 2,
+            random.randint(constants.SIZE, constants.DIS_WIDTH - constants.SIZE),
+            random.randint(constants.SIZE, constants.DIS_WIDTH - constants.SIZE),
+            constants.SIZE / 2,
             "circle",
         )
 
     def draw(self, dis):
-        self.circle.draw(dis, RED)
+        self.circle.draw(dis, constants.COLORS["RED"])
 
     def move(self):
-        self.circle.x = random.randint(SIZE, DIS_WIDTH - SIZE)
-        self.circle.y = random.randint(SIZE, DIS_WIDTH - SIZE)
+        self.circle.x = random.randint(constants.SIZE, constants.DIS_WIDTH - constants.SIZE)
+        self.circle.y = random.randint(constants.SIZE, constants.DIS_WIDTH - constants.SIZE)
 
     def collide(self, player):
         x_dist = min(
@@ -88,7 +78,7 @@ class Snake:
         self.name = name
         self.image = image
         self.blocks = [
-            Position(x_pos - i * SIZE, y_pos, SIZE, "rect", self.image)
+            Position(x_pos - i * constants.SIZE, y_pos, constants.SIZE, "rect", self.image)
             for i in range(self.length)
         ]
         self.speed = 2
@@ -96,18 +86,18 @@ class Snake:
         self.block_vel = [Velocity(self.speed, 0) for _ in range(self.length)]
         self.score = self.length - 4
 
-    def draw(self, dis, font):
+    def draw(self, dis):
         corners = self.find_corner()
         for corner in corners:
-            pygame.draw.rect(dis, GREEN, [corner[0], corner[1], SIZE, SIZE])
-        self.blocks[0].draw(dis, GREEN)
+            pygame.draw.rect(dis, constants.COLORS["GREEN"], [corner[0], corner[1], constants.SIZE, constants.SIZE])
+        self.blocks[0].draw(dis, constants.COLORS["GREEN"])
         for i in range(1, len(self.blocks)):
-            self.blocks[i].draw(dis, GREEN)
+            self.blocks[i].draw(dis, constants.COLORS["GREEN"])
         self.blocks[0].paint_head(dis)
 
-        score_text = font.render(f"Player {self.name}: {self.score}", True, BLACK)
+        score_text = constants.FONT.render(f"Player {self.name}: {self.score}", True, constants.COLORS["BLACK"])
         score_rect = score_text.get_rect(center=(0, -10 + 25 * self.keyboard))
-        score_rect.right = DIS_WIDTH - 10
+        score_rect.right = constants.DIS_WIDTH - 10
 
         return score_text, score_rect
 
@@ -132,7 +122,7 @@ class Snake:
 
     # Gives the good key depending on the snake (int keyboard)
     def keys(self, event, counter):
-        if counter - self.last_pause <= FPS / 5:
+        if counter - self.last_pause <= constants.FPS / 5:
             pass
         elif self.keyboard == 1:
             if event.key == pygame.K_LEFT and self.vel.x == 0:
@@ -175,7 +165,7 @@ class Snake:
     def move(self):
         # counter until block has to move
         self.block_counter += 1
-        if self.block_counter >= SIZE / self.speed:
+        if self.block_counter >= constants.SIZE / self.speed:
             self.block_vel.pop(-1)
             self.block_vel = [Velocity(self.vel.x, self.vel.y)] + self.block_vel
             self.block_counter = 0
@@ -184,15 +174,15 @@ class Snake:
             self.blocks[i].x += self.block_vel[i].x
             self.blocks[i].y += self.block_vel[i].y
 
-        CLOCK.tick(FPS)
+        constants.CLOCK.tick(constants.FPS)
 
     def grow(self):
         self.length += 1
         self.blocks.append(
             Position(
-                self.blocks[-1].x - self.block_vel[-1].x / self.speed * SIZE,
-                self.blocks[-1].y - self.block_vel[-1].y / self.speed * SIZE,
-                SIZE,
+                self.blocks[-1].x - self.block_vel[-1].x / self.speed * constants.SIZE,
+                self.blocks[-1].y - self.block_vel[-1].y / self.speed * constants.SIZE,
+                constants.SIZE,
                 "rect",
                 self.image,
             )
@@ -213,14 +203,14 @@ class Snake:
         # the second and third block touch the first one
         for i in range(3, self.length):
             if (
-                self.blocks[i].x - SIZE < self.blocks[0].x < self.blocks[i].x + SIZE
-                and self.blocks[i].y - SIZE < self.blocks[0].y < self.blocks[i].y + SIZE
+                self.blocks[i].x - constants.SIZE < self.blocks[0].x < self.blocks[i].x + constants.SIZE
+                and self.blocks[i].y - constants.SIZE < self.blocks[0].y < self.blocks[i].y + constants.SIZE
             ):
                 return True
         if (
-            self.blocks[0].x > DIS_WIDTH - SIZE
+            self.blocks[0].x > constants.DIS_WIDTH - constants.SIZE
             or self.blocks[0].x < -2
-            or self.blocks[0].y > DIS_HEIGHT - SIZE
+            or self.blocks[0].y > constants.DIS_HEIGHT - constants.SIZE
             or self.blocks[0].y < 0
         ):
             return True
@@ -230,7 +220,7 @@ class Snake:
         for block1 in snake.blocks:
             dist_x = abs(block1.x - self.blocks[0].x)
             dist_y = abs(block1.y - self.blocks[0].y)
-            if dist_x + dist_y <= SIZE:
+            if dist_x + dist_y <= constants.SIZE:
                 return True
         else:
             return False
