@@ -248,7 +248,8 @@ class AI(Snake):
                 self.blocks[0].x + self.blocks[0].width / 2 - apple.circle.x,
                 self.blocks[0].y + self.blocks[0].width / 2 - apple.circle.y,
             ]
-            # signs were the other way around, but actually works better like this, since not as predictable
+            # signs were the other way around, but actually works better like this,
+            # since not as predictable
             if dist[0] > -apple.circle.width and self.vel.x == 0:
                 self.vel.x = -self.speed
                 self.vel.y = 0
