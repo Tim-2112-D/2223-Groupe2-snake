@@ -44,13 +44,13 @@ Tim DAFFNER - Charles DEZONS
 3. [x] Border rules
 4. [x] Apples
 5. [x] Scoreboard
-6. [ ] Start-screen
+6. [x] Start-screen
 7. [x] End-screen
 8. [x] Second snake
 9. [x] Second user steering the snake
 10. [x] Adapting scoreboard for two users
 11. [x] Adapting start + end-screen if not done before
-12. [ ] AI
+12. [x] AI
 13. [ ] Implementing random AI
-14. [ ] Adapting startscreen for AI choice
+14. [x] Adapting startscreen for AI choice
 15. [ ] ??? smart AI with different levels
