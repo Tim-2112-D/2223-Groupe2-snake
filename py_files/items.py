@@ -242,6 +242,36 @@ class Snake:
 class BaseAISnake(Snake):
     NAME: str
 
+    def keys(self, event, counter, goal, player):
+        if counter - self.last_pause <= const.FPS:
+            pass
+        else:
+            self.aim(goal, counter)
+
+    def aim(self, goal, counter):
+        dist = [
+            self.blocks[0].x + self.blocks[0].width / 2 - goal.x,
+            self.blocks[0].y + self.blocks[0].width / 2 - goal.y,
+        ]
+        # signs were the other way around, but actually works better like this,
+        # since not as predictable
+        if dist[0] > -goal.width and self.vel.x == 0:
+            self.vel.x = -self.speed
+            self.vel.y = 0
+            self.last_pause = counter
+        elif dist[0] < goal.width and self.vel.x == 0:
+            self.vel.x = self.speed
+            self.vel.y = 0
+            self.last_pause = counter
+        elif dist[1] > -goal.width and self.vel.y == 0:
+            self.vel.x = 0
+            self.vel.y = -self.speed
+            self.last_pause = counter
+        elif dist[1] < goal.width and self.vel.y == 0:
+            self.vel.x = 0
+            self.vel.y = self.speed
+            self.last_pause = counter
+
 
 class PacifistAI(BaseAISnake):
     NAME = "AI-PACIFIST"
@@ -250,28 +280,7 @@ class PacifistAI(BaseAISnake):
         if counter - self.last_pause <= const.FPS:
             pass
         else:
-            dist = [
-                self.blocks[0].x + self.blocks[0].width / 2 - apple.circle.x,
-                self.blocks[0].y + self.blocks[0].width / 2 - apple.circle.y,
-            ]
-            # signs were the other way around, but actually works better like this,
-            # since not as predictable
-            if dist[0] > -apple.circle.width and self.vel.x == 0:
-                self.vel.x = -self.speed
-                self.vel.y = 0
-                self.last_pause = counter
-            elif dist[0] < apple.circle.width and self.vel.x == 0:
-                self.vel.x = self.speed
-                self.vel.y = 0
-                self.last_pause = counter
-            elif dist[1] > -apple.circle.width and self.vel.y == 0:
-                self.vel.x = 0
-                self.vel.y = -self.speed
-                self.last_pause = counter
-            elif dist[1] < apple.circle.width and self.vel.y == 0:
-                self.vel.x = 0
-                self.vel.y = self.speed
-                self.last_pause = counter
+            self.aim(apple.circle, counter)
 
 
 class KamikazeAI(BaseAISnake):
@@ -281,28 +290,36 @@ class KamikazeAI(BaseAISnake):
         if counter - self.last_pause <= const.FPS:
             pass
         else:
-            dist = [
-                self.blocks[0].x + self.blocks[0].width / 2 - player.blocks[0].x,
-                self.blocks[0].y + self.blocks[0].width / 2 - player.blocks[0].y,
-            ]
-            # signs were the other way around, but actually works better like this,
-            # since not as predictable
-            if dist[0] > -player.blocks[0].width and self.vel.x == 0:
-                self.vel.x = -self.speed
-                self.vel.y = 0
-                self.last_pause = counter
-            elif dist[0] < player.blocks[0].width and self.vel.x == 0:
-                self.vel.x = self.speed
-                self.vel.y = 0
-                self.last_pause = counter
-            elif dist[1] > -player.blocks[0].width and self.vel.y == 0:
-                self.vel.x = 0
-                self.vel.y = -self.speed
-                self.last_pause = counter
-            elif dist[1] < player.blocks[0].width and self.vel.y == 0:
-                self.vel.x = 0
-                self.vel.y = self.speed
-                self.last_pause = counter
+            self.aim(player.blocks[0], counter)
 
 
-ALL_AIS = {ai_class.NAME: ai_class for ai_class in [PacifistAI, KamikazeAI]}
+class FollowerAI(BaseAISnake):
+    NAME = "AI-FOLLOW"
+
+    def keys(self, event, counter, apple, player):
+        if counter - self.last_pause <= const.FPS:
+            pass
+        else:
+            self.aim(player.blocks[-1], counter)
+
+
+class MurderAI(BaseAISnake):
+    NAME = "AI-MURDER"
+
+    def keys(self, event, counter, apple, player):
+        if counter - self.last_pause <= const.FPS:
+            pass
+        else:
+            goal = Position(
+                player.blocks[0].x + 200 * player.block_vel[0].x,
+                player.blocks[0].y + 200 * player.block_vel[0].y,
+                player.blocks[0].width,
+            )
+            self.aim(goal, counter)
+
+
+# User Input: AI-PACIFIST, AI-KAMIKAZE, AI-FOLLOW, AI-MURDER
+ALL_AIS = {
+    ai_class.NAME: ai_class
+    for ai_class in [PacifistAI, KamikazeAI, MurderAI, FollowerAI]
+}

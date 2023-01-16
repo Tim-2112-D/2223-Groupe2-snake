@@ -39,7 +39,7 @@ def game_loop():
         game.gameover = game.play()
         if game.player1.name in ALL_AIS:
             game.player1.keys(None, game.time, game.apple, game.player2)
-        elif game.player2.name in ALL_AIS:
+        if game.player2.name in ALL_AIS:
             game.player2.keys(None, game.time, game.apple, game.player1)
 
     pygame.display.update()
