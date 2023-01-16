@@ -318,8 +318,25 @@ class MurderAI(BaseAISnake):
             self.aim(goal, counter)
 
 
-# User Input: AI-PACIFIST, AI-KAMIKAZE, AI-FOLLOW, AI-MURDER
+class RandomAI(BaseAISnake):
+    NAME = "AI-RANDOM"
+
+    def keys(self, event, counter, apple, player):
+        if counter - self.last_pause <= const.FPS:
+            pass
+        else:
+            self.aim(
+                Position(
+                    random.randint(0, const.DIS_WIDTH),
+                    random.randint(0, const.DIS_HEIGHT),
+                    1,
+                ),
+                counter,
+            )
+
+
+# User Input: AI-PACIFIST, AI-KAMIKAZE, AI-FOLLOW, AI-MURDER, AI-RANDOM
 ALL_AIS = {
     ai_class.NAME: ai_class
-    for ai_class in [PacifistAI, KamikazeAI, MurderAI, FollowerAI]
+    for ai_class in [PacifistAI, KamikazeAI, MurderAI, FollowerAI, RandomAI]
 }
