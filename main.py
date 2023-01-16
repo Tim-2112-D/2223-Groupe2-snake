@@ -1,6 +1,7 @@
 import pygame
 
 from py_files.screens import Startscreen, Game
+from py_files.items import ALL_AIS
 import py_files.constants as const
 
 pygame.init()
@@ -18,8 +19,8 @@ def game_loop():
         if event.type == pygame.QUIT:
             return True
         if event.type == pygame.KEYDOWN:
-            game.player1.keys(event, game.time, game.apple)
-            game.player2.keys(event, game.time, game.apple)
+            game.player1.keys(event, game.time, game.apple, game.player2)
+            game.player2.keys(event, game.time, game.apple, game.player1)
 
             if event.key == pygame.K_SPACE and game.gameover:
                 game.__init__(start.input_one.text, start.input_two.text)
@@ -36,10 +37,10 @@ def game_loop():
 
     if not game.gameover and game_play:
         game.gameover = game.play()
-        if game.player1.name == "AI":
-            game.player1.keys(None, game.time, game.apple)
-        elif game.player2.name == "AI":
-            game.player2.keys(None, game.time, game.apple)
+        if game.player1.name in ALL_AIS:
+            game.player1.keys(None, game.time, game.apple, game.player2)
+        elif game.player2.name in ALL_AIS:
+            game.player2.keys(None, game.time, game.apple, game.player1)
 
     pygame.display.update()
 

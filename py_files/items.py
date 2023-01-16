@@ -130,7 +130,7 @@ class Snake:
         return corner_pos
 
     # Gives the good key depending on the snake (int keyboard)
-    def keys(self, event, counter, apple):
+    def keys(self, event, counter, apple, player):
         if counter - self.last_pause <= const.FPS / 5:
             pass
         elif self.keyboard == 1:
@@ -239,8 +239,14 @@ class Snake:
             return False
 
 
-class AI(Snake):
-    def keys(self, event, counter, apple):
+class BaseAISnake(Snake):
+    NAME: str
+
+
+class PacifistAI(BaseAISnake):
+    NAME = "AI-PACIFIST"
+
+    def keys(self, event, counter, apple, player):
         if counter - self.last_pause <= const.FPS:
             pass
         else:
@@ -266,3 +272,37 @@ class AI(Snake):
                 self.vel.x = 0
                 self.vel.y = self.speed
                 self.last_pause = counter
+
+
+class KamikazeAI(BaseAISnake):
+    NAME = "AI-KAMIKAZE"
+
+    def keys(self, event, counter, apple, player):
+        if counter - self.last_pause <= const.FPS:
+            pass
+        else:
+            dist = [
+                self.blocks[0].x + self.blocks[0].width / 2 - player.blocks[0].x,
+                self.blocks[0].y + self.blocks[0].width / 2 - player.blocks[0].y,
+            ]
+            # signs were the other way around, but actually works better like this,
+            # since not as predictable
+            if dist[0] > -player.blocks[0].width and self.vel.x == 0:
+                self.vel.x = -self.speed
+                self.vel.y = 0
+                self.last_pause = counter
+            elif dist[0] < player.blocks[0].width and self.vel.x == 0:
+                self.vel.x = self.speed
+                self.vel.y = 0
+                self.last_pause = counter
+            elif dist[1] > -player.blocks[0].width and self.vel.y == 0:
+                self.vel.x = 0
+                self.vel.y = -self.speed
+                self.last_pause = counter
+            elif dist[1] < player.blocks[0].width and self.vel.y == 0:
+                self.vel.x = 0
+                self.vel.y = self.speed
+                self.last_pause = counter
+
+
+ALL_AIS = {ai_class.NAME: ai_class for ai_class in [PacifistAI, KamikazeAI]}
