@@ -1,5 +1,6 @@
-### thanks to skrx on stackoverflow 
-### https://stackoverflow.com/questions/46390231/how-can-i-create-a-text-input-box-with-pygame/46390412#46390412
+### thanks to skrx on stackoverflow
+### https://stackoverflow.com/questions/46390231/
+### how-can-i-create-a-text-input-box-with-pygame/46390412#46390412
 
 import pygame
 
