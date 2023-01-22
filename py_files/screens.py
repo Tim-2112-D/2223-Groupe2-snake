@@ -3,6 +3,7 @@ import pygame
 import py_files.constants as const
 import py_files.items as items
 from py_files.inputbox import InputBox
+from py_files.save_score import write_hs
 
 
 class Startscreen:
@@ -152,4 +153,6 @@ class Scoreboard:
         self._score1 = score1
         self._score2 = score2
         self._winner = winner
+        write_hs(self._name1, self._score1)
+        write_hs(self._name2, self._score2)
         self.render()
