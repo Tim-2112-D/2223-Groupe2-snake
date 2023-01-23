@@ -9,7 +9,7 @@ def write_hs(name, score):
     try:
         with open("highscores.pkl", "rb") as in_:
             high_scores = pickle.load(in_)
-    except (OSError, IOError) as e:
+    except (OSError, IOError):
         high_scores = {}
 
     if new_scores.name not in high_scores:

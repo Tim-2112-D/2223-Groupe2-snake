@@ -52,18 +52,25 @@ class Startscreen:
         const.DISPLAY.blit(self.text_player_two, self.text_player_two_rect)
         self.input_two.draw(const.DISPLAY)
         self.input_two.update()
-        
 
-        text_highscore_title = const.FONTS["NORMAL"].render(f"HIGHSCORES", True, const.COLORS["WHITE"])
-        text_highscore_title_rect = text_highscore_title.get_rect(center=(const.DIS_WIDTH / 2, 330))
+        text_highscore_title = const.FONTS["NORMAL"].render(
+            "HIGHSCORES", True, const.COLORS["WHITE"]
+        )
+        text_highscore_title_rect = text_highscore_title.get_rect(
+            center=(const.DIS_WIDTH / 2, 330)
+        )
         const.DISPLAY.blit(text_highscore_title, text_highscore_title_rect)
 
         highscores = get_hs()
         for i, (name, score) in enumerate(highscores.items()):
             if i > 2:
                 break
-            text_highscore = const.FONTS["NORMAL"].render(f"{name}: {score}", True, const.COLORS["WHITE"])
-            text_highscore_rect = text_highscore.get_rect(center=(const.DIS_WIDTH / 2, 360 + i*30))
+            text_highscore = const.FONTS["NORMAL"].render(
+                f"{name}: {score}", True, const.COLORS["WHITE"]
+            )
+            text_highscore_rect = text_highscore.get_rect(
+                center=(const.DIS_WIDTH / 2, 360 + i * 30)
+            )
             const.DISPLAY.blit(text_highscore, text_highscore_rect)
 
         const.DISPLAY.blit(self.text_enter, self.text_enter_rect)
@@ -163,18 +170,25 @@ class Scoreboard:
         text_space_rect = text_space.get_rect(center=(const.DIS_WIDTH / 2, 250))
         const.DISPLAY.blit(text_space, text_space_rect)
 
-        text_highscore_title = const.FONTS["NORMAL"].render(f"HIGHSCORES", True, const.COLORS["WHITE"])
-        text_highscore_title_rect = text_highscore_title.get_rect(center=(const.DIS_WIDTH / 2, 350))
+        text_highscore_title = const.FONTS["NORMAL"].render(
+            "HIGHSCORES", True, const.COLORS["WHITE"]
+        )
+        text_highscore_title_rect = text_highscore_title.get_rect(
+            center=(const.DIS_WIDTH / 2, 350)
+        )
         const.DISPLAY.blit(text_highscore_title, text_highscore_title_rect)
 
         highscores = get_hs()
         for i, (name, score) in enumerate(highscores.items()):
             if i > 2:
                 break
-            text_highscore = const.FONTS["NORMAL"].render(f"{name}: {score}", True, const.COLORS["WHITE"])
-            text_highscore_rect = text_highscore.get_rect(center=(const.DIS_WIDTH / 2, 380 + i*30))
+            text_highscore = const.FONTS["NORMAL"].render(
+                f"{name}: {score}", True, const.COLORS["WHITE"]
+            )
+            text_highscore_rect = text_highscore.get_rect(
+                center=(const.DIS_WIDTH / 2, 380 + i * 30)
+            )
             const.DISPLAY.blit(text_highscore, text_highscore_rect)
-
 
     def set_score(self, score1, score2, winner):
         self._score1 = score1
