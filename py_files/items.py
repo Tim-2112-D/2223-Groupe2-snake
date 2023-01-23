@@ -5,13 +5,13 @@ import py_files.constants as const
 
 
 class Velocity:
-    def __init__(self, x, y):
+    def __init__(self, x: int, y: int):
         self.x = x
         self.y = y
 
 
 class Position:
-    def __init__(self, x, y, width, form="rect", image=None):
+    def __init__(self, x: int, y: int, width: int, form: str = "rect", image=None):
         self.x = x
         self.y = y
         self.width = width
@@ -19,7 +19,7 @@ class Position:
         self.object = None
         self.image = image
 
-    def draw(self, color):
+    def draw(self, color: str):
         if self.form == "rect":
             self.object = pygame.draw.rect(
                 const.DISPLAY, color, [self.x, self.y, self.width, self.width]
@@ -71,7 +71,7 @@ class Apple:
 
 
 class Snake:
-    def __init__(self, x_pos, y_pos, keyboard, name, image):
+    def __init__(self, x_pos: int, y_pos: int, keyboard: int, name: str, image):
         self.last_pause = 0
         self.block_counter = 0
         self.length = 4
@@ -89,7 +89,7 @@ class Snake:
         self.block_vel = [Velocity(self.speed, 0) for _ in range(self.length)]
         self.score = self.length - 4
 
-    def draw(self):
+    def draw(self) -> tuple[pygame.Surface, pygame.Rect]:
         corners = self.find_corner()
         for corner in corners:
             pygame.draw.rect(
@@ -110,7 +110,7 @@ class Snake:
 
         return score_text, score_rect
 
-    def find_corner(self):
+    def find_corner(self) -> set:
         corner_pos = set(())
         for i in range(1, len(self.blocks)):
             vec1 = [
@@ -130,7 +130,7 @@ class Snake:
         return corner_pos
 
     # Gives the good key depending on the snake (int keyboard)
-    def keys(self, event, counter, apple, player):
+    def keys(self, event: pygame.event, counter: int, apple: Apple, player: any):
         if counter - self.last_pause <= const.FPS / 5:
             pass
         elif self.keyboard == 1:
@@ -206,7 +206,7 @@ class Snake:
                 if velocity.y != 0:
                     velocity.y = velocity.y / abs(velocity.y) * self.speed
 
-    def intersect(self):
+    def intersect(self) -> bool:
         # We check if the head connects with the body.
         # We check the intersection after the third block because when the snake turns,
         # the second and third block touch the first one
@@ -229,7 +229,7 @@ class Snake:
             return True
         return False
 
-    def intersection(self, snake):
+    def intersection(self, snake: any):
         for block1 in snake.blocks:
             dist_x = abs(block1.x - self.blocks[0].x)
             dist_y = abs(block1.y - self.blocks[0].y)

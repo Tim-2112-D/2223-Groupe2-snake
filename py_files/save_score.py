@@ -1,26 +1,22 @@
 import pickle
-import collections
-
-Score = collections.namedtuple("Score", ["name", "score"])
 
 
-def write_hs(name, score):
-    new_scores = Score(name, score)
+def write_hs(name: str, score: str):
     try:
         with open("highscores.pkl", "rb") as in_:
             high_scores = pickle.load(in_)
     except (OSError, IOError):
         high_scores = {}
 
-    if new_scores.name not in high_scores:
-        high_scores[new_scores.name] = new_scores.score
-    elif new_scores.score > high_scores[new_scores.name]:
-        high_scores[new_scores.name] = new_scores.score
+    if name not in high_scores:
+        high_scores[name] = score
+    elif score > high_scores[name]:
+        high_scores[name] = score
     with open("highscores.pkl", "wb") as out:
         pickle.dump(high_scores, out)
 
 
-def get_hs():
+def get_hs() -> dict:
     with open("highscores.pkl", "rb") as in_:
         high_scores = pickle.load(in_)
     sorted_hs = sorted(high_scores, key=high_scores.get, reverse=True)

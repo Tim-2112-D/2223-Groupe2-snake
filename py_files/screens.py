@@ -77,7 +77,7 @@ class Startscreen:
 
 
 class Game:
-    def __init__(self, name_one="1", name_two="2", ai=False):
+    def __init__(self, name_one: str = "1", name_two: str = "2"):
         self.quit_game = False
         self.gameover = False
         player_class1 = items.ALL_AIS.get(name_one, items.Snake)
@@ -97,7 +97,7 @@ class Game:
             1,
         )
 
-    def play(self):
+    def play(self) -> bool:
         self.player1.move()
         self.player2.move()
 
@@ -126,7 +126,7 @@ class Game:
 
 
 class Scoreboard:
-    def __init__(self, score1, name1, score2, name2, winner):
+    def __init__(self, score1: int, name1: str, score2: int, name2: str, winner: int):
         self._score1 = score1
         self._name1 = name1
         self._score2 = score2
@@ -145,7 +145,7 @@ class Scoreboard:
         const.DISPLAY.blit(text_scoreboard, text_scoreboard_rect)
 
         text_winner = const.FONTS["NORMAL"].render(
-            f"Player {[self._name1, self._name2][int(self._winner)-1]} wins!!!",
+            f"Player {[self._name1, self._name2][self._winner-1]} wins!!!",
             True,
             const.COLORS["WHITE"],
         )
@@ -190,7 +190,7 @@ class Scoreboard:
             )
             const.DISPLAY.blit(text_highscore, text_highscore_rect)
 
-    def set_score(self, score1, score2, winner):
+    def set_score(self, score1: int, score2: int, winner: int):
         self._score1 = score1
         self._score2 = score2
         self._winner = winner

@@ -12,7 +12,7 @@ pygame.display.set_icon(const.IMAGES["ICON"])
 ### in order to activate AI name the player AI
 
 
-def game_loop():
+def game_loop() -> bool:
     global game_play
 
     for event in pygame.event.get():
