@@ -3,19 +3,18 @@
 ### how-can-i-create-a-text-input-box-with-pygame/46390412#46390412
 
 import pygame
-
 import py_files.constants as const
 
 
 class InputBox:
-    def __init__(self, x, y, w, h, text=""):
-        self.rect = pygame.Rect(x, y, w, h)
-        self.color = const.COLORS["INACTIVE"]
+    def __init__(self, x: int, y: int, w: int, h: int, text: str =""):
+        self.rect: pygame.Rect = pygame.Rect(x, y, w, h)
+        self.color: str | pygame.Color = const.COLORS["INACTIVE"]
         self.text = text
-        self.txt_surface = const.FONTS["LARGE"].render(text, True, self.color)
-        self.active = False
+        self.txt_surface: pygame.Surface = const.FONTS["LARGE"].render(text, True, self.color)
+        self.active: bool = False
 
-    def handle_event(self, event):
+    def handle_event(self, event: pygame.event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             # If the user clicked on the input_box rect.
             if self.rect.collidepoint(event.pos):
@@ -42,7 +41,7 @@ class InputBox:
                 )
 
     def update(self):
-        width = max(200, self.txt_surface.get_width() + 10)
+        width: int = max(200, self.txt_surface.get_width() + 10)
         self.rect.w = width
 
     def draw(self, screen):

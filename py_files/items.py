@@ -16,10 +16,10 @@ class Position:
         self.y = y
         self.width = width
         self.form = form
-        self.object = None
+        self.object: None | pygame.Rect = None
         self.image = image
 
-    def draw(self, color: str):
+    def draw(self, color: str | pygame.Color):
         if self.form == "rect":
             self.object = pygame.draw.rect(
                 const.DISPLAY, color, [self.x, self.y, self.width, self.width]
@@ -35,7 +35,7 @@ class Position:
 
 class Apple:
     def __init__(self):
-        self.circle = Position(
+        self.circle: Position = Position(
             random.randint(const.SIZE, const.DIS_WIDTH - const.SIZE),
             random.randint(const.SIZE, const.DIS_WIDTH - const.SIZE),
             const.SIZE / 2,
@@ -50,47 +50,47 @@ class Apple:
         self.circle.y = random.randint(const.SIZE, const.DIS_WIDTH - const.SIZE)
 
     def collide(self, player):
-        x_dist = min(
+        x_dist: int = min(
             [
                 player.blocks[0].x + player.blocks[0].width - self.circle.x,
                 player.blocks[0].x - self.circle.x,
             ],
             key=abs,
         )
-        y_dist = min(
+        y_dist: int = min(
             [
                 player.blocks[0].y + player.blocks[0].width - self.circle.y,
                 player.blocks[0].y - self.circle.y,
             ],
             key=abs,
         )
-        distance = pow(x_dist, 2) + pow(y_dist, 2)
+        distance: int = pow(x_dist, 2) + pow(y_dist, 2)
         if distance <= pow(self.circle.width, 2):
             self.move()
             player.grow()
 
 
 class Snake:
-    def __init__(self, x_pos: int, y_pos: int, keyboard: int, name: str, image):
-        self.last_pause = 0
-        self.block_counter = 0
-        self.length = 4
+    def __init__(self, x_pos: int, y_pos: int, keyboard: int, name: str, image: pygame.Surface):
+        self.last_pause: int = 0
+        self.block_counter: int = 0
+        self.length: int = 4
         # This variable will help us attribute the good keys
         # (1 for player one, 2 for player 2)
         self.keyboard = keyboard
         self.name = name
         self.image = image
-        self.blocks = [
+        self.blocks: list[Position] = [
             Position(x_pos - i * const.SIZE, y_pos, const.SIZE, "rect", self.image)
             for i in range(self.length)
         ]
-        self.speed = 2
-        self.vel = Velocity(self.speed, 0)
-        self.block_vel = [Velocity(self.speed, 0) for _ in range(self.length)]
-        self.score = self.length - 4
+        self.speed: int = 2
+        self.vel: Velocity = Velocity(self.speed, 0)
+        self.block_vel: list[Velocity] = [Velocity(self.speed, 0) for _ in range(self.length)]
+        self.score: int = self.length - 4
 
     def draw(self) -> tuple[pygame.Surface, pygame.Rect]:
-        corners = self.find_corner()
+        corners: set = self.find_corner()
         for corner in corners:
             pygame.draw.rect(
                 const.DISPLAY,
@@ -102,26 +102,26 @@ class Snake:
             self.blocks[i].draw(const.COLORS["GREEN"])
         self.blocks[0].paint_head()
 
-        score_text = const.FONTS["NORMAL"].render(
+        score_text: pygame.Surface = const.FONTS["NORMAL"].render(
             f"Player {self.name}: {self.score}", True, const.COLORS["BLACK"]
         )
-        score_rect = score_text.get_rect(center=(0, -10 + 25 * self.keyboard))
+        score_rect: pygame.Rect = score_text.get_rect(center=(0, -10 + 25 * self.keyboard))
         score_rect.right = const.DIS_WIDTH - 10
 
         return score_text, score_rect
 
     def find_corner(self) -> set:
-        corner_pos = set(())
+        corner_pos: set = set(())
         for i in range(1, len(self.blocks)):
-            vec1 = [
+            vec1: list[int] = [
                 1 if self.block_vel[i - 1].x == 0 else 0,
                 1 if self.block_vel[i - 1].y == 0 else 0,
             ]
-            vec2 = [
+            vec2: list[int] = [
                 1 if self.block_vel[i].x == 0 else 0,
                 1 if self.block_vel[i].y == 0 else 0,
             ]
-            pos = (
+            pos: tuple = (
                 vec1[0] * self.blocks[i - 1].x + vec2[0] * self.blocks[i].x,
                 vec1[1] * self.blocks[i - 1].y + vec2[1] * self.blocks[i].y,
             )
@@ -202,9 +202,9 @@ class Snake:
             self.speed += 2
             for velocity in self.block_vel:
                 if velocity.x != 0:
-                    velocity.x = velocity.x / abs(velocity.x) * self.speed
+                    velocity.x = int(velocity.x / abs(velocity.x) * self.speed)
                 if velocity.y != 0:
-                    velocity.y = velocity.y / abs(velocity.y) * self.speed
+                    velocity.y = int(velocity.y / abs(velocity.y) * self.speed)
 
     def intersect(self) -> bool:
         # We check if the head connects with the body.
@@ -229,10 +229,10 @@ class Snake:
             return True
         return False
 
-    def intersection(self, snake: any):
+    def intersection(self, snake) -> bool:
         for block1 in snake.blocks:
-            dist_x = abs(block1.x - self.blocks[0].x)
-            dist_y = abs(block1.y - self.blocks[0].y)
+            dist_x: int = abs(block1.x - self.blocks[0].x)
+            dist_y: int = abs(block1.y - self.blocks[0].y)
             if dist_x + dist_y <= const.SIZE:
                 return True
         else:
@@ -242,13 +242,13 @@ class Snake:
 class BaseAISnake(Snake):
     NAME: str
 
-    def keys(self, event, counter, goal, player):
+    def keys(self, event: pygame.event, counter: int, goal: Position, player: Snake):
         if counter - self.last_pause <= const.FPS:
             pass
         else:
             self.aim(goal, counter)
 
-    def aim(self, goal, counter):
+    def aim(self, goal: Position, counter: int):
         dist = [
             self.blocks[0].x + self.blocks[0].width / 2 - goal.x,
             self.blocks[0].y + self.blocks[0].width / 2 - goal.y,
@@ -274,9 +274,9 @@ class BaseAISnake(Snake):
 
 
 class PacifistAI(BaseAISnake):
-    NAME = "AI-PACIFIST"
+    NAME: str = "AI-PACIFIST"
 
-    def keys(self, event, counter, apple, player):
+    def keys(self, event: pygame.event, counter: int, apple: Apple, player: Snake):
         if counter - self.last_pause <= const.FPS:
             pass
         else:
@@ -286,7 +286,7 @@ class PacifistAI(BaseAISnake):
 class KamikazeAI(BaseAISnake):
     NAME = "AI-KAMIKAZE"
 
-    def keys(self, event, counter, apple, player):
+    def keys(self, event: pygame.event, counter: int, apple: Apple, player: Snake):
         if counter - self.last_pause <= const.FPS:
             pass
         else:
@@ -296,7 +296,7 @@ class KamikazeAI(BaseAISnake):
 class FollowerAI(BaseAISnake):
     NAME = "AI-FOLLOW"
 
-    def keys(self, event, counter, apple, player):
+    def keys(self, event: pygame.event, counter: int, apple: Apple, player: Snake):
         if counter - self.last_pause <= const.FPS:
             pass
         else:
@@ -306,7 +306,7 @@ class FollowerAI(BaseAISnake):
 class MurderAI(BaseAISnake):
     NAME = "AI-MURDER"
 
-    def keys(self, event, counter, apple, player):
+    def keys(self, event: pygame.event, counter: int, apple: Apple, player: Snake):
         if counter - self.last_pause <= const.FPS:
             pass
         else:
@@ -321,7 +321,7 @@ class MurderAI(BaseAISnake):
 class RandomAI(BaseAISnake):
     NAME = "AI-RANDOM"
 
-    def keys(self, event, counter, apple, player):
+    def keys(self, event: pygame.event, counter: int, apple: Apple, player: Snake):
         if counter - self.last_pause <= const.FPS:
             pass
         else:
@@ -336,7 +336,7 @@ class RandomAI(BaseAISnake):
 
 
 # User Input: AI-PACIFIST, AI-KAMIKAZE, AI-FOLLOW, AI-MURDER, AI-RANDOM
-ALL_AIS = {
+ALL_AIS: dict = {
     ai_class.NAME: ai_class
     for ai_class in [PacifistAI, KamikazeAI, MurderAI, FollowerAI, RandomAI]
 }

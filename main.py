@@ -49,7 +49,7 @@ def game_loop() -> bool:
 
 start = Startscreen()
 game = Game()
-game_play = False
+game_play: bool = False
 
 while not game.quit_game:
     game.quit_game = game_loop()

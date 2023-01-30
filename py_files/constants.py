@@ -1,16 +1,16 @@
 import pygame
 
-BLINK_EVENT = pygame.USEREVENT + 0
+BLINK_EVENT: int = pygame.USEREVENT + 0
 
-SIZE = 20
-DIS_WIDTH = 600
-DIS_HEIGHT = 600
+SIZE: int = 20
+DIS_WIDTH: int = 600
+DIS_HEIGHT: int = 600
 
-FPS = 30
+FPS: int = 30
 
-CLOCK = pygame.time.Clock()
+CLOCK: pygame.time.Clock = pygame.time.Clock()
 
-COLORS = {
+COLORS: dict[str, str | pygame.Color] = {
     "GREEN": "#32CD32",
     "RED": "#F22323",
     "WHITE": "#FFFFFF",
@@ -21,16 +21,16 @@ COLORS = {
 }
 
 pygame.font.init()
-FONTS = {
+FONTS: dict[str, pygame.Surface] = {
     "NORMAL": pygame.font.SysFont("arial", 20),
     "LARGE": pygame.font.SysFont("arial", 26),
 }
 
-DISPLAY = pygame.display.set_mode((DIS_WIDTH, DIS_HEIGHT))
-IMAGE1 = pygame.image.load("images/Charles_face.png").convert_alpha()
-IMAGE2 = pygame.image.load("images/TIM_snake_face.png").convert_alpha()
+DISPLAY: pygame.Surface = pygame.display.set_mode((DIS_WIDTH, DIS_HEIGHT))
+IMAGE1: pygame.Surface = pygame.image.load("images/Charles_face.png").convert_alpha()
+IMAGE2: pygame.Surface = pygame.image.load("images/TIM_snake_face.png").convert_alpha()
 
-IMAGES = {
+IMAGES: dict[str, pygame.Surface] = {
     "ICON": pygame.image.load("images/icon.png"),
     "CHARLES": pygame.transform.scale(IMAGE1, (SIZE, SIZE)),
     "TIM": pygame.transform.scale(IMAGE2, (SIZE, SIZE)),
