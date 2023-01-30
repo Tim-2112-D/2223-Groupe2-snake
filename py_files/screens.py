@@ -11,19 +11,19 @@ class Startscreen:
         self.text_snake: pygame.Surface = const.FONTS["NORMAL"].render(
             "SNAKE", True, const.COLORS["WHITE"]
         )
-        self.text_snake_rect: pygame.rect = self.text_snake.get_rect(
+        self.text_snake_rect: pygame.Rect = self.text_snake.get_rect(
             center=(const.DIS_WIDTH / 2, 60)
         )
         self.text_author: pygame.Surface = const.FONTS["NORMAL"].render(
             "by Charles Dezons and Tim Daffner", True, const.COLORS["WHITE"]
         )
-        self.text_author_rect: pygame.rect = self.text_author.get_rect(
+        self.text_author_rect: pygame.Rect = self.text_author.get_rect(
             center=(const.DIS_WIDTH / 2, 80)
         )
         self.text_player_one: pygame.Surface = const.FONTS["NORMAL"].render(
             "Please enter Name of Player 1:", True, const.COLORS["WHITE"]
         )
-        self.text_player_one_rect: pygame.rect = self.text_player_one.get_rect(
+        self.text_player_one_rect: pygame.Rect = self.text_player_one.get_rect(
             center=(const.DIS_WIDTH / 2, 140)
         )
         self.input_one: InputBox = InputBox(
@@ -32,7 +32,7 @@ class Startscreen:
         self.text_player_two = const.FONTS["NORMAL"].render(
             "Please enter Name of Player 2:", True, const.COLORS["WHITE"]
         )
-        self.text_player_two_rect: pygame.rect = self.text_player_two.get_rect(
+        self.text_player_two_rect: pygame.Rect = self.text_player_two.get_rect(
             center=(const.DIS_WIDTH / 2, 220)
         )
         self.input_two: InputBox = InputBox(
@@ -42,7 +42,7 @@ class Startscreen:
         self.text_enter: pygame.Surface = const.FONTS["NORMAL"].render(
             "Press ENTER when ready", True, const.COLORS["WHITE"]
         )
-        self.text_enter_rect: pygame.rect = self.text_enter.get_rect(
+        self.text_enter_rect: pygame.Rect = self.text_enter.get_rect(
             center=(const.DIS_WIDTH / 2, 500)
         )
 
@@ -60,7 +60,7 @@ class Startscreen:
         text_highscore_title: pygame.Surface = const.FONTS["NORMAL"].render(
             "HIGHSCORES", True, const.COLORS["WHITE"]
         )
-        text_highscore_title_rect: pygame.rect = text_highscore_title.get_rect(
+        text_highscore_title_rect: pygame.Rect = text_highscore_title.get_rect(
             center=(const.DIS_WIDTH / 2, 330)
         )
         const.DISPLAY.blit(text_highscore_title, text_highscore_title_rect)
@@ -72,7 +72,7 @@ class Startscreen:
             text_highscore: pygame.Surface = const.FONTS["NORMAL"].render(
                 f"{name}: {score}", True, const.COLORS["WHITE"]
             )
-            text_highscore_rect: pygame.rect = text_highscore.get_rect(
+            text_highscore_rect: pygame.Rect = text_highscore.get_rect(
                 center=(const.DIS_WIDTH / 2, 360 + i * 30)
             )
             const.DISPLAY.blit(text_highscore, text_highscore_rect)
