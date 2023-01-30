@@ -7,11 +7,13 @@ import py_files.constants as const
 
 
 class InputBox:
-    def __init__(self, x: int, y: int, w: int, h: int, text: str =""):
+    def __init__(self, x: int, y: int, w: int, h: int, text: str = ""):
         self.rect: pygame.Rect = pygame.Rect(x, y, w, h)
         self.color: str | pygame.Color = const.COLORS["INACTIVE"]
         self.text = text
-        self.txt_surface: pygame.Surface = const.FONTS["LARGE"].render(text, True, self.color)
+        self.txt_surface: pygame.Surface = const.FONTS["LARGE"].render(
+            text, True, self.color
+        )
         self.active: bool = False
 
     def handle_event(self, event: pygame.event):

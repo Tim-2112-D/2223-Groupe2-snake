@@ -19,5 +19,5 @@ def write_hs(name: str, score: int):
 def get_hs() -> dict[str, int]:
     with open("highscores.pkl", "rb") as in_:
         high_scores: dict[str, int] = pickle.load(in_)
-    sorted_hs: list[str]= sorted(high_scores, key=high_scores.get, reverse=True)
+    sorted_hs: list[str] = sorted(high_scores, key=high_scores.get, reverse=True)
     return {name: high_scores[name] for name in sorted_hs}

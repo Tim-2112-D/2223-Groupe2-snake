@@ -71,7 +71,9 @@ class Apple:
 
 
 class Snake:
-    def __init__(self, x_pos: int, y_pos: int, keyboard: int, name: str, image: pygame.Surface):
+    def __init__(
+        self, x_pos: int, y_pos: int, keyboard: int, name: str, image: pygame.Surface
+    ):
         self.last_pause: int = 0
         self.block_counter: int = 0
         self.length: int = 4
@@ -86,7 +88,9 @@ class Snake:
         ]
         self.speed: int = 2
         self.vel: Velocity = Velocity(self.speed, 0)
-        self.block_vel: list[Velocity] = [Velocity(self.speed, 0) for _ in range(self.length)]
+        self.block_vel: list[Velocity] = [
+            Velocity(self.speed, 0) for _ in range(self.length)
+        ]
         self.score: int = self.length - 4
 
     def draw(self) -> tuple[pygame.Surface, pygame.Rect]:
@@ -105,7 +109,9 @@ class Snake:
         score_text: pygame.Surface = const.FONTS["NORMAL"].render(
             f"Player {self.name}: {self.score}", True, const.COLORS["BLACK"]
         )
-        score_rect: pygame.Rect = score_text.get_rect(center=(0, -10 + 25 * self.keyboard))
+        score_rect: pygame.Rect = score_text.get_rect(
+            center=(0, -10 + 25 * self.keyboard)
+        )
         score_rect.right = const.DIS_WIDTH - 10
 
         return score_text, score_rect

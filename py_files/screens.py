@@ -26,14 +26,18 @@ class Startscreen:
         self.text_player_one_rect: pygame.rect = self.text_player_one.get_rect(
             center=(const.DIS_WIDTH / 2, 140)
         )
-        self.input_one: InputBox = InputBox(const.DIS_WIDTH / 2 - 100, 160, 140, 32, "Tim")
+        self.input_one: InputBox = InputBox(
+            const.DIS_WIDTH / 2 - 100, 160, 140, 32, "Tim"
+        )
         self.text_player_two = const.FONTS["NORMAL"].render(
             "Please enter Name of Player 2:", True, const.COLORS["WHITE"]
         )
         self.text_player_two_rect: pygame.rect = self.text_player_two.get_rect(
             center=(const.DIS_WIDTH / 2, 220)
         )
-        self.input_two: InputBox = InputBox(const.DIS_WIDTH / 2 - 100, 240, 140, 32, "Charles")
+        self.input_two: InputBox = InputBox(
+            const.DIS_WIDTH / 2 - 100, 240, 140, 32, "Charles"
+        )
 
         self.text_enter: pygame.Surface = const.FONTS["NORMAL"].render(
             "Press ENTER when ready", True, const.COLORS["WHITE"]
@@ -81,7 +85,9 @@ class Game:
         self.quit_game: bool = False
         self.gameover: bool = False
         player_class1 = items.ALL_AIS.get(name_one, items.Snake)
-        self.player1: items.Snake = player_class1(40, 100, 1, name_one, const.IMAGES["CHARLES"])
+        self.player1: items.Snake = player_class1(
+            40, 100, 1, name_one, const.IMAGES["CHARLES"]
+        )
         player_class2 = items.ALL_AIS.get(name_two, items.Snake)
         self.player2: items.Snake = player_class2(
             40, const.DIS_HEIGHT - 120, 2, name_two, const.IMAGES["TIM"]
@@ -149,25 +155,33 @@ class Scoreboard:
             True,
             const.COLORS["WHITE"],
         )
-        text_winner_rect: pygame.Rect = text_winner.get_rect(center=(const.DIS_WIDTH / 2, 90))
+        text_winner_rect: pygame.Rect = text_winner.get_rect(
+            center=(const.DIS_WIDTH / 2, 90)
+        )
         const.DISPLAY.blit(text_winner, text_winner_rect)
 
         text_score_one: pygame.Surface = const.FONTS["NORMAL"].render(
             f"{self._name1}: {self._score1}", True, const.COLORS["WHITE"]
         )
-        text_score_one_rect: pygame.Rect = text_score_one.get_rect(center=(const.DIS_WIDTH / 2, 120))
+        text_score_one_rect: pygame.Rect = text_score_one.get_rect(
+            center=(const.DIS_WIDTH / 2, 120)
+        )
         const.DISPLAY.blit(text_score_one, text_score_one_rect)
 
         text_score_two: pygame.Surface = const.FONTS["NORMAL"].render(
             f"{self._name2}: {self._score2}", True, const.COLORS["WHITE"]
         )
-        text_score_two_rect: pygame.Rect = text_score_two.get_rect(center=(const.DIS_WIDTH / 2, 150))
+        text_score_two_rect: pygame.Rect = text_score_two.get_rect(
+            center=(const.DIS_WIDTH / 2, 150)
+        )
         const.DISPLAY.blit(text_score_two, text_score_two_rect)
 
         text_space: pygame.Surface = const.FONTS["NORMAL"].render(
             "Press SPACE to start a new game", True, const.COLORS["WHITE"]
         )
-        text_space_rect: pygame.Rect = text_space.get_rect(center=(const.DIS_WIDTH / 2, 250))
+        text_space_rect: pygame.Rect = text_space.get_rect(
+            center=(const.DIS_WIDTH / 2, 250)
+        )
         const.DISPLAY.blit(text_space, text_space_rect)
 
         text_highscore_title: pygame.Surface = const.FONTS["NORMAL"].render(
